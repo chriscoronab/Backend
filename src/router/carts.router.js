@@ -8,28 +8,28 @@ const cartManager = new CartManager();
 router.get("/", async (req, res) => {
     try {
         const carts = await cartManager.getCarts();
-        res.json(carts);
+        res.send(carts);
     } catch (error) {
-        res.status(500).send({ error: "Error al obtener los carritos" });
+        res.status(500).send("Error al obtener los carritos " + error);
     };
 });
 
 router.get("/:cid", async (req, res) => {
     try {
-        const cid = parseInt(req.params.cid);
-        const cart = await cartManager.getCartByID(cid);
-        res.json(cart);
+        const id = parseInt(req.params.cid);
+        const cart = await cartManager.getCartByID(id);
+        res.send(cart);
     } catch (error) {
-        res.status(404).send({ error: "Cart not found" });
+        res.status(404).send("Cart not found " + error);
     };
 });
 
 router.post("/", async (req, res) => {
     try {
         const cart = await cartManager.createCart();
-        res.json(cart);
+        res.send(cart);
     } catch (error) {
-        res.status(500).send({ error: "Error al crear el carrito" });
+        res.status(500).send("Error al crear el carrito " + error);
     };
 });
 
@@ -38,9 +38,9 @@ router.post("/:cid/product/:pid", async (req, res) => {
         const cid = parseInt(req.params.cid);
         const pid = parseInt(req.params.pid);
         const product = await cartManager.addProductToCart(cid, pid);
-        res.json(product);
+        res.send(product);
     } catch (error) {
-        res.status(500).send({ error: "Error al agregar el producto al carrito" });
+        res.status(500).send("Error al agregar el producto al carrito " + error);
     };
 });
 
