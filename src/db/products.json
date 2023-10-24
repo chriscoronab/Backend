@@ -1,0 +1,112 @@
+[
+	{
+		"id": 1,
+		"title": "Chicago Bulls",
+		"description": "Camiseta Chicago Bulls Nike Icon Edition Swingman - Rojo - DeMar DeRozan - Unisex",
+		"category": "East Side",
+		"price": 25000,
+		"thumbnail": "Sin imagen",
+		"code": 19435,
+		"stock": 15,
+		"status": true
+	},
+	{
+		"id": 2,
+		"title": "Boston Celtics",
+		"description": "Camiseta Boston Celtics Nike Icon Edition Swingman - Verde - Jayson Tatum - Unisex",
+		"category": "East Side",
+		"price": 25000,
+		"thumbnail": "Sin imagen",
+		"code": 54745,
+		"stock": 12,
+		"status": true
+	},
+	{
+		"id": 3,
+		"title": "Los Angeles Lakers",
+		"description": "Camiseta Los Angeles Lakers Nike Icon Edition Swingman - Amarillo - Lebron James - Unisex",
+		"category": "West Side",
+		"price": 25000,
+		"thumbnail": "Sin imagen",
+		"code": 34657,
+		"stock": 9,
+		"status": true
+	},
+	{
+		"id": 4,
+		"title": "Miami Heat",
+		"description": "Camiseta Miami Heat Nike Icon Edition Swingman - Negro - Tyler Herro - Unisex",
+		"category": "East Side",
+		"price": 25000,
+		"thumbnail": "Sin imagen",
+		"code": 73463,
+		"stock": 5,
+		"status": true
+	},
+	{
+		"id": 5,
+		"title": "Cleveland Cavaliers",
+		"description": "Camiseta Cleveland Cavaliers Nike Icon Edition Swingman - Granate - Evan Mobley - Unisex",
+		"category": "East Side",
+		"price": 25000,
+		"thumbnail": "Sin imagen",
+		"code": 94574,
+		"stock": 11,
+		"status": true
+	},
+	{
+		"id": 6,
+		"title": "New York Knicks",
+		"description": "Camiseta New York Knicks Nike Icon Edition Swingman - Azul - Julius Randle - Unisex",
+		"category": "East Side",
+		"price": 25000,
+		"thumbnail": "Sin imagen",
+		"code": 23423,
+		"stock": 12,
+		"status": true
+	},
+	{
+		"id": 7,
+		"title": "Atlanta Hawks",
+		"description": "Camiseta Atlanta Hawks Jordan Statement Edition Swingman - Negro - Trae Young - Unisex",
+		"category": "East Side",
+		"price": 25000,
+		"thumbnail": "Sin imagen",
+		"code": 62334,
+		"stock": 6,
+		"status": true
+	},
+	{
+		"id": 8,
+		"title": "Denver Nuggets",
+		"description": "Camiseta Denver Nuggets Nike Association Edition Swingman - Blanco - Aaron Gordon - Unisex",
+		"category": "West Side",
+		"price": 25000,
+		"thumbnail": "Sin imagen",
+		"code": 46534,
+		"stock": 4,
+		"status": true
+	},
+	{
+		"id": 9,
+		"title": "Toronto Raptors",
+		"description": "Camiseta Toronto Raptors Nike Icon Edition Swingman - Rojo - OG Anunoby - Unisex",
+		"category": "East Side",
+		"price": 25000,
+		"thumbnail": "Sin imagen",
+		"code": 34237,
+		"stock": 7,
+		"status": true
+	},
+	{
+		"id": 10,
+		"title": "Golden State Warriors",
+		"description": "Camiseta Golden State Warriors Nike Icon Edition Swingman - Azul - Stephen Curry - Unisex",
+		"category": "West Side",
+		"price": 25000,
+		"thumbnail": "Sin imagen",
+		"code": 11442,
+		"stock": 10,
+		"status": true
+	}
+]

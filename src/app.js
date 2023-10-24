@@ -1,24 +1,14 @@
 import express from "express";
-import ProductManager from "./productManager.js";
+import routerProducts from "./router/products.router.js";
+import routerCarts from "./router/carts.router.js";
 
 const app = express();
-const productManager = new ProductManager();
 
-app.get("/products", async (req, res) => {
-    try {
-        const limit = parseInt(req.query?.limit);
-        const products = await productManager.getProducts(limit);
-        res.json({ products });
-    } catch (error) {
-        res.status(500).send(error);
-    };
-});
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use("/static", express.static("./src/public"));
 
-app.get("/products/:id", async (req, res) => {
-    const id = parseInt(req.params.id);
-    const product = await productManager.getProductByID(id);
-    if (!product) return res.send({ error: "Product not found" });
-    res.send({ product });
-});
+app.use("/api/products", routerProducts);
+app.use("/api/carts", routerCarts);
 
 app.listen(8080, () => console.log("Listening on port..."));

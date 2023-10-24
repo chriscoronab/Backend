@@ -2,7 +2,7 @@ import fs from "fs";
 
 export default class ProductManager {
     constructor() {
-        this.path = "./src/products.json";
+        this.path = "./src/db/products.json";
         this.format = "utf-8";
         this.products = [];
     };
@@ -24,17 +24,19 @@ export default class ProductManager {
     };
     addProduct = async (prod) => {
         try {
-            const { title, description, price, thumbnail, code, stock } = prod;
-            if(!fs.existsSync(this.path)) {
-                if(!title || !description || !price || !thumbnail || !code || !stock) return `Campo incompleto`;
+            const { title, description, category, price, thumbnail, code, stock } = prod;
+            if (!fs.existsSync(this.path)) {
+                if (!title || !description || !category ||!price || !code || !stock) return `Campo incompleto`;
                 const product = {
                     id: this.products.length + 1,
                     title,
                     description,
+                    category,
                     price,
                     thumbnail,
                     code,
-                    stock
+                    stock,
+                    status: true
                 };
                 this.products.push(product);
                 await fs.promises.writeFile(this.path, JSON.stringify(this.products, null, "\t"));
@@ -42,17 +44,19 @@ export default class ProductManager {
             };
             const data = await fs.promises.readFile(this.path, this.format);
             this.products = JSON.parse(data);
-            if(!title || !description || !price || !thumbnail || !code || !stock ) return `Campo incompleto`;
+            if (!title || !description || !category || !price || !code || !stock ) return `Campo incompleto`;
             const validate = await this.validateCode(code);
             if (validate) return `Error. Este código ${code} se encuentra repetido.`;
             const product = {
                 id: this.products.length + 1,
                 title,
                 description,
+                category,
                 price,
                 thumbnail,
                 code,
-                stock
+                stock,
+                status: true
             };
             this.products.push(product);
             await fs.promises.writeFile(this.path, JSON.stringify(this.products, null, "\t"));
