@@ -26,7 +26,7 @@ export default class ProductManager {
         try {
             const { title, description, category, price, thumbnail, code, stock } = prod;
             if (!fs.existsSync(this.path)) {
-                if (!title || !description || !category ||!price || !code || !stock) return `Campo incompleto`;
+                if (!title || !description || !category ||!price || !code || !stock) return `Todos los campos son requeridos`;
                 const product = {
                     id: this.products.length + 1,
                     title,
@@ -44,7 +44,7 @@ export default class ProductManager {
             };
             const data = await fs.promises.readFile(this.path, this.format);
             this.products = JSON.parse(data);
-            if (!title || !description || !category || !price || !code || !stock ) return `Campo incompleto`;
+            if (!title || !description || !category || !price || !code || !stock ) return `Todos los campos son requeridos`;
             const validate = await this.validateCode(code);
             if (validate) return `Error. Este código ${code} se encuentra repetido.`;
             const product = {

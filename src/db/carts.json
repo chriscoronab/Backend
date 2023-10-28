@@ -16,8 +16,8 @@
 		"id": 2,
 		"products": [
 			{
-				"pid": 10,
-				"quantity": 1
+				"product": 10,
+				"quantity": 2
 			}
 		]
 	},
@@ -25,8 +25,8 @@
 		"id": 3,
 		"products": [
 			{
-				"pid": 6,
-				"quantity": 1
+				"product": 6,
+				"quantity": 4
 			}
 		]
 	},
@@ -34,7 +34,7 @@
 		"id": 4,
 		"products": [
 			{
-				"pid": 4,
+				"pid": 3,
 				"quantity": 1
 			}
 		]

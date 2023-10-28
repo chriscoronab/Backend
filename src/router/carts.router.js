@@ -8,28 +8,29 @@ const cartManager = new CartManager();
 router.get("/", async (req, res) => {
     try {
         const carts = await cartManager.getCarts();
-        res.send(carts);
+        res.status(200).json({ carts });
     } catch (error) {
-        res.status(500).send("Error al obtener los carritos " + error);
+        res.status(500).send({ error: error.message });
     };
 });
 
 router.get("/:cid", async (req, res) => {
     try {
-        const id = parseInt(req.params.cid);
-        const cart = await cartManager.getCartByID(id);
-        res.send(cart);
+        const cid = parseInt(req.params.cid);
+        const cart = await cartManager.getCartByID(cid);
+        if (!cart) return res.status(404).json({ error: `El carrito con ID ${cid} no existe` });
+        res.status(200).json({ cart });
     } catch (error) {
-        res.status(404).send("Cart not found " + error);
+        res.status(500).send({ error: error.message });
     };
 });
 
 router.post("/", async (req, res) => {
     try {
-        const cart = await cartManager.createCart();
-        res.send(cart);
+        await cartManager.createCart();
+        res.status(200).send({ message: "Carrito creado con éxito" });
     } catch (error) {
-        res.status(500).send("Error al crear el carrito " + error);
+        res.status(500).send({ error: error.message });
     };
 });
 
@@ -37,10 +38,11 @@ router.post("/:cid/product/:pid", async (req, res) => {
     try {
         const cid = parseInt(req.params.cid);
         const pid = parseInt(req.params.pid);
-        const product = await cartManager.addProductToCart(cid, pid);
-        res.send(product);
+        const cart = await cartManager.addProductToCart(cid, pid);
+        if (!cart) return res.status(404).json({ error: `El carrito con ID ${cid} no existe` });
+        res.status(200).json({ message: `Producto ${pid} agregado al carrito ${cid} con éxito` });
     } catch (error) {
-        res.status(500).send("Error al agregar el producto al carrito " + error);
+        res.status(500).send({ error: error.message });
     };
 });
 
