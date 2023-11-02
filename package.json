@@ -1,16 +1,19 @@
 {
   "name": "desafio3",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/app.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./src/app.js"
+    "start": "node .",
+    "dev": "nodemon ."
   },
   "author": "Christian Corona",
   "license": "ISC",
   "description": "Backend",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "express-handlebars": "^7.1.2",
+    "socket.io": "^4.7.2"
   }
 }

@@ -1,0 +1,95 @@
+<div class="my-2">
+    <h2 class="text-center py-4">Real Time Products</h2>
+    <div class="card mb-5 col-md-6 offset-md-3 mx-auto">
+        <div class="card-header text-center">
+            <h5 class="fw-semibold">Formulario para crear producto</h5>
+        </div>
+        <div class="card-body">
+            <form id="form">
+                <div class="mb-2">
+                    <label for="title" class="form-label fw-semibold">Producto:</label>
+                    <input type="text" class="form-control"
+                    name="title"
+                    id="title" required />
+                </div>
+                <div class="mb-2">
+                    <label for="description" class="form-label fw-semibold">Descripción:</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="description"
+                        id="description"
+                        required />
+                </div>
+                <div class="mb-2">
+                    <label for="price" class="form-label fw-semibold">Precio:</label>
+                    <input
+                        type="number"
+                        class="form-control"
+                        name="price"
+                        id="price"
+                        required />
+                </div>
+                <div class="mb-2">
+                    <label for="code" class="form-label fw-semibold">Código:</label>
+                    <input type="number" class="form-control"
+                    name="code"
+                    id="code"
+                    required />
+                </div>
+                <div class="mb-2">
+                    <label for="category" class="form-label fw-semibold">Categoría:</label>
+                    <select class="form-select" aria-label="Default select example" name="category" id="category" required>
+                        <option value="East Side">East Side</option>
+                        <option value="West Side">West Side</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label for="stock" class="form-label fw-semibold">Stock:</label>
+                    <input
+                        type="number"
+                        class="form-control"
+                        name="stock"
+                        id="stock"
+                        required />
+                </div>
+                <button
+                    type="submit"
+                    class="btn btn-success form-control fw-bold"
+                    id="addProduct"
+                >Crear Producto</button>
+            </form>
+        </div>
+    </div>
+    <table class="container table table-bordered table-striped table-hover text-center mt-5"
+        id="productsTable">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Descripción</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>Código</th>
+                <th>Stock</th>
+                <th>Gestión</th>
+            </tr>
+        </thead>
+        <tbody id="tbody">
+            {{#each allProducts}}
+                <tr>
+                    <td class="text-start">{{this.title}}</td>
+                    <td class="text-start">{{this.description}}</td>
+                    <td>{{this.category}}</td>
+                    <td>{{this.price}}</td>
+                    <td>{{this.code}}</td>
+                    <td>{{this.stock}}</td>
+                    <td>
+                    <button class="btn btn-danger" onclick="deleteProduct({{this.id}})" id="deleteButton">Eliminar</button>
+                    </td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>

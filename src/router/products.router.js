@@ -30,7 +30,11 @@ router.post("/", async (req, res) => {
     try {
         const data = req.body;
         const product = await productManager.addProduct(data);
-        if (product) return res.status(201).json({ message: "Producto agregado con éxito" });
+        if (product) {
+            const products = await productManager.getProducts();
+            req.app.get("socketio").emit("updatedProducts", products);
+            return res.status(201).json({ message: `Producto ${product.id} agregado con éxito` });
+        }
         return res.status(404).json({ error: "Error al agregar el producto" });
     } catch (error) {
         res.status(500).send({ error: error.message });
@@ -44,6 +48,8 @@ router.put("/:pid", async (req, res) => {
         const producto = await productManager.getProductByID(pid);
         if (!producto) return res.status(404).json({ error: `El producto con ID ${pid} no existe` });
         await productManager.updateProduct(pid, data);
+        const updatedProducts = await productManager.getProducts();
+        req.app.get("socketio").emit("updatedProducts", updatedProducts);
         res.status(200).json({ message: `Producto ${pid} actualizado con éxito` });
     } catch (error) {
         res.status(500).send({ error: error.message });
@@ -56,6 +62,8 @@ router.delete("/:pid", async (req, res) => {
         const producto = await productManager.getProductByID(pid);
         if (!producto) return res.status(404).json({ error: `El producto con ID ${pid} no existe` });
         await productManager.deleteProduct(pid);
+        const updatedProducts = await productManager.getProducts();
+        req.app.get("socketio").emit("updatedProducts", updatedProducts);
         res.status(200).json({ message: `Producto ${pid} eliminado con éxito` });
     } catch (error) {
         res.status(500).send({ error: error.message });

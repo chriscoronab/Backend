@@ -21,7 +21,7 @@ export default class CartManager {
             this.carts = carts;
             return cart;
         } catch (error) {
-            return error;
+            return `No se pudo crear el carrito`;
         };
     };
     getCarts = async () => {
@@ -30,7 +30,7 @@ export default class CartManager {
             this.carts = JSON.parse(data);
             return this.carts;
         } catch (error) {
-            return error;
+            return `File not found`;
         };
     };
     getCartByID = async (cid) => {
@@ -39,7 +39,7 @@ export default class CartManager {
             const cart = carts.find(c => c.id === cid);
             return cart;
         } catch (error) {
-            return error;
+            return `Not found`;
         };
     };
     addProductToCart = async (cid, pid) => {
@@ -66,7 +66,7 @@ export default class CartManager {
             await fs.promises.writeFile(this.path, JSON.stringify(carts, null, "\t"));
             return cart;
         } catch (error) {
-            return error;
+            return `No se pudo agregar el producto al carrito`;
         };
     };
 };
