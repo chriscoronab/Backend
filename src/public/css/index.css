@@ -5,3 +5,83 @@ body {
 a {
     text-decoration: none;
 }
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: black;
+}
+nav a {
+    color: white;
+}
+nav img {
+    margin-left: 25em;
+}
+nav p {
+    margin: 0 2em;
+}
+nav p:hover{
+    transform: scale(1.2, 1.2);
+}
+.container {
+    margin: 2em 3em;
+}
+footer p {
+    text-align: center;
+    margin-top: 4em;
+}
+.index img {
+    margin-left: 22em;
+}
+.index h3 {
+    margin: 1em auto;
+    text-align: center;
+}
+.form {
+    margin-left: 5em;
+}
+.form button {
+    margin: 2em 0 0 30em;
+}
+.products {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-left: 6em;
+}
+.card {
+    margin: 1.5em;
+}
+.card a {
+    color: black;
+}
+.detail {
+    display: flex;
+}
+.detail img {
+    width: 45%;
+}
+.detail h2 {
+    margin-bottom: 1em;
+}
+.detail div {
+    margin: 0 13em 0 2em;
+}
+.chat h2 {
+    margin: 1em 0;
+    text-align: center;
+}
+.userAndMessage {
+    display: flex;
+    align-items: center;
+}
+.userAndMessage input {
+    margin: 0 0.5em;
+}
+.messages {
+    display: flex;
+    flex-direction: column;
+}

@@ -1,0 +1,71 @@
+<div class="form">
+    <div class="card-header text-center">
+        <h5 class="fw-semibold">Formulario para crear producto</h5>
+    </div>
+    <div class="card-body">
+        <form id="form" method="post">
+            <div class="mb-2">
+                <label for="title" class="form-label fw-semibold">Nombre:</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="title"
+                    id="title"
+                    required />
+            </div>
+            <div class="mb-2">
+                <label for="description" class="form-label fw-semibold">Descripción:</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="description"
+                    id="description"
+                    required />
+            </div>
+            <div class="mb-2">
+                <label for="category" class="form-label fw-semibold">Categoría:</label>
+                <select
+                    class="form-select" aria-label="Default select example"
+                    name="category"
+                    id="category"
+                    required>
+                    <option value="East Side">East Side</option>
+                    <option value="West Side">West Side</option>
+                </select>
+            </div>
+            <div class="mb-2">
+                <label for="price" class="form-label fw-semibold">Precio:</label>
+                <input
+                    type="number"
+                    class="form-control"
+                    name="price"
+                    id="price"
+                    required />
+            </div>
+            <div class="mb-2">
+                <label for="thumbnail" class="form-label fw-semibold">Foto:</label>
+                <input
+                    type="file"
+                    class="form-control"
+                    name="thumbnail"
+                    id="thumbnail"
+                    required />
+            </div>
+            <div class="mb-2">
+                <label for="stock" class="form-label fw-semibold">Stock:</label>
+                <input
+                    type="number"
+                    class="form-control"
+                    name="stock"
+                    id="stock"
+                    required />
+            </div>
+            <button
+                type="submit"
+                class="btn btn-success fw-bold"
+                value="create">
+                Crear Producto
+            </button>
+        </form>
+    </div>
+</div>

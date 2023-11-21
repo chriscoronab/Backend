@@ -1,5 +1,5 @@
 {
-  "name": "desafio3",
+  "name": "flow-nba",
   "version": "1.0.0",
   "main": "src/app.js",
   "type": "module",
@@ -10,10 +10,11 @@
   },
   "author": "Christian Corona",
   "license": "ISC",
-  "description": "Backend",
+  "description": "Backend proyect",
   "dependencies": {
     "express": "^4.18.2",
     "express-handlebars": "^7.1.2",
+    "mongoose": "^8.0.0",
     "socket.io": "^4.7.2"
   }
 }

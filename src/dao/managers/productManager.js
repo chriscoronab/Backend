@@ -2,7 +2,7 @@ import fs from "fs";
 
 export default class ProductManager {
     constructor() {
-        this.path = "./src/db/products.json";
+        this.path = "./src/files/products.json";
         this.format = "utf-8";
         this.products = [];
     };
