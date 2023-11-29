@@ -4,6 +4,7 @@ body {
 }
 a {
     text-decoration: none;
+    color: white;
 }
 nav {
     position: sticky;
@@ -13,9 +14,6 @@ nav {
     flex-direction: row;
     align-items: center;
     background-color: black;
-}
-nav a {
-    color: white;
 }
 nav img {
     margin-left: 25em;
@@ -36,8 +34,8 @@ footer p {
 .index img {
     margin-left: 22em;
 }
-.index h3 {
-    margin: 1em auto;
+.index h3, .cart h2, .cart h3, .error h3 {
+    margin: 1em 0 1em 3em;
     text-align: center;
 }
 .form {
@@ -57,6 +55,16 @@ footer p {
 }
 .card a {
     color: black;
+}
+.paginate p {
+    margin: 2em 0 0 6em;
+    text-align: center;
+}
+.filters {
+    margin: 0 0 2em 62.5em;
+}
+.filters a:hover {
+    font-weight: bold;
 }
 .detail {
     display: flex;

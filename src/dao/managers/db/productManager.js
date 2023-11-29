@@ -1,21 +1,20 @@
-import productModel from "../models/products.model.js";
+import productModel from "../../models/products.model.js";
 
 export default class ProductManager {
     constructor() {
         this.model = productModel;
     };
-    getProducts = async (limit) => {
+    getProducts = async () => {
         try {
-            const products = await this.model.find().lean().exec();
-            const productsFiltered = limit ? products.slice(0, limit) : products;
-            return productsFiltered;
+            const products = await this.model.find();
+            return products;
         } catch (error) {
             console.error(error);
         };
     };
     addProduct = async (product) => {
         try {
-            if (!product.title || !product.description || !product.category || !product.price || !product.thumbnail || !product.stock ) return `Todos los campos son requeridos`;
+            if (!product.title || !product.description || !product.category || !product.price || !product.thumbnail || !product.stock) return `Todos los campos son requeridos`;
             const newProduct = await this.model.create(product);
             return newProduct;
         } catch (error) {

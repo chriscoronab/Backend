@@ -6,10 +6,7 @@ const router = Router();
 router.get("/", async (req, res) => {
     try {
         const messages = await messageModel.find().lean().exec();
-        res.status(200).render("chat", {
-            style: "index.css",
-            messages
-        });
+        res.status(200).render("chat", { messages });
     } catch (error) {
         res.status(500).send({ error: error.message });
     };

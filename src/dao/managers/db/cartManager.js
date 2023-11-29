@@ -1,5 +1,5 @@
-import cartModel from "../models/carts.model.js";
-import productModel from "../models/products.model.js";
+import cartModel from "../../models/carts.model.js";
+import productModel from "../../models/products.model.js";
 
 export default class CartManager {
     constructor() {
@@ -22,7 +22,7 @@ export default class CartManager {
     };
     getCartByID = async (cid) => {
         try {
-            const cart = await this.model.findOne({ _id: cid });
+            const cart = await this.model.findOne({ _id: cid }).lean();
             return cart;
         } catch (error) {
             console.error(error);
@@ -39,8 +39,8 @@ export default class CartManager {
             } else {
                 existingProduct.quantity ++;
             };
-            const result = await this.updateCart(cid, cart);
-            return result;
+            const updatedCart = await this.updateCart(cid, cart);
+            return updatedCart;
         } catch (error) {
             console.error(error);
         };
@@ -53,10 +53,14 @@ export default class CartManager {
             console.error(error);
         };
     };
-    deleteCart = async (cid) => {
+    deleteCartProduct = async (cid, pid) => {
         try {
-            const deletedCart = await this.model.deleteOne({ _id: cid });
-            return deletedCart;
+            const cart = await this.getCartByID(cid);
+            const product = cart.products.find(item => item.product._id == pid);
+            if (!product) return null;
+            cart.products.splice(product, 1);
+            const updatedCart = await this.updateCart(cid, cart);
+            return updatedCart;
         } catch {
             console.error(error);
         };
@@ -65,7 +69,7 @@ export default class CartManager {
         try {
             const cart = await this.getCartByID(cid);
             cart.products.splice(0, cart.products.length);
-            const updatedCart = await this.model.updateOne({ _id: cid }, cart);
+            const updatedCart = await this.updateCart(cid, cart);
             return updatedCart;
         } catch {
             console.error(error);
