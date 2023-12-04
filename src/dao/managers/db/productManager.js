@@ -14,7 +14,6 @@ export default class ProductManager {
     };
     addProduct = async (product) => {
         try {
-            if (!product.title || !product.description || !product.category || !product.price || !product.thumbnail || !product.stock) return `Todos los campos son requeridos`;
             const newProduct = await this.model.create(product);
             return newProduct;
         } catch (error) {
@@ -23,7 +22,7 @@ export default class ProductManager {
     };
     getProductByID = async (pid) => {
         try {
-            const product = await this.model.findOne({ _id: pid}).lean().exec();
+            const product = await this.model.findOne({ _id: pid }).lean().exec();
             return product;
         } catch (error) {
             console.error(error);

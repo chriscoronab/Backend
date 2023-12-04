@@ -1,0 +1,49 @@
+<div class="profile">
+    <div class="user">
+        <h2>¡Bienvenido, {{user.name}}!</h2>
+        <p><b>Email:</b> {{user.email}}</p>
+        <p><b>Edad:</b> {{user.age}}</p>
+        <p><b>Rol:</b> {{user.role}}</p>
+        <a href="/session/logout"><button class="btn btn-primary">Cerrar sesión</button></a>
+    </div>
+    <div class="btn-group filters">
+        <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            Filtrar productos
+        </button>
+        <ul class="dropdown-menu">
+            <li class="dropdown-item">Por categoría</li>
+            <li><a class="dropdown-item" href="/products?page=1&limit=15&category=East%20Side">East Side</a></li>
+            <li><a class="dropdown-item" href="/products?page=1&limit=15&category=West%20Side">West Side</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li class="dropdown-item">Por precio</li>
+            <li><a class="dropdown-item" href="/products?page=1&limit=30&sort=asc">Menor a mayor</a></li>
+            <li><a class="dropdown-item" href="/products?page=1&limit=30&sort=desc">Mayor a menor</a></li>
+        </ul>
+    </div>
+</div>
+<div class="products">
+    {{#each products}}
+    <div class="card" style="width: 18rem;">
+        <a href="/products/{{this._id}}">
+            <img src="/images/{{this.thumbnail}}" class="card-img-top" alt="{{this.title}}">
+            <div class="card-body">
+                <h5 class="card-title">{{this.title}}</h5>
+                <p class="card-text">{{this.description}}</p>
+                <p class="card-text">Precio: {{this.price}}</p>
+            </div>
+        </a>
+    </div>
+    {{/each}}
+</div>
+<div class="paginate">
+    <p>Productos: {{totalDocs}}
+        <br>
+    {{#if hasPrevPage}}
+        <a href="/products?page={{prevPage}}&limit={{limit}}"><</a>
+    {{/if}}
+    {{page}} / {{totalPages}}
+    {{#if hasNextPage}}
+        <a href="/products?page={{nextPage}}&limit={{limit}}">></a>
+    {{/if}}
+    </p>
+</div>

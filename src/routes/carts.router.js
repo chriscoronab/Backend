@@ -70,10 +70,10 @@ router.put("/:cid/products/:pid", async (req, res) => {
         const { cid } = req.params;
         const { pid } = req.params;
         const newQuantity = req.body.quantity;
-        if (newQuantity < 0) return res.status(400).send({ error: `La cantidad debe ser mayor a 0` });
+        if (newQuantity < 0) return res.status(400).send({ error: "La cantidad debe ser mayor a 0" });
         const cart = await cartManager.getCartByID(cid);
         const product = cart.products.find(item => item.product._id == pid);
-        if (!cart || !product) return res.status(404).send({ error: `Carrito o producto no existe` });
+        if (!cart || !product) return res.status(404).send({ error: "Carrito o producto no existe" });
         product.quantity = newQuantity;
         const updatedCart = await cartManager.updateCart(cid, cart);
         res.status(200).send({ status: "success", payload: updatedCart });

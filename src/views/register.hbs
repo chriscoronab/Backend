@@ -1,0 +1,28 @@
+<div class="register">
+    <form action="/session/register" method="post">
+        <div class="mb-3">
+            <label for="first_name" class="form-label">Nombre</label>
+            <input type="text" name="first_name" id="first_name" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label for="last_name" class="form-label">Apellido</label>
+            <input type="text" name="last_name" id="last_name" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Correo electrónico</label>
+            <input type="email" name="email" id="email" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label for="age" class="form-label">Edad</label>
+            <input type="number" name="age" id="age" min="18" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Contraseña</label>
+            <input type="password" name="password" id="password" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Registrarse</button>
+    </form>
+    <p>¿Ya tienes una cuenta?
+        <br>
+    <a href="/"><u>Ingresa aquí</u></a></p>
+<div>

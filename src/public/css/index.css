@@ -31,10 +31,21 @@ footer p {
     text-align: center;
     margin-top: 4em;
 }
-.index img {
-    margin-left: 22em;
+.login form, .register form {
+    margin: 5em 0 2em 23em;
+    width: 40%;
 }
-.index h3, .cart h2, .cart h3, .error h3 {
+.login form button {
+    margin: 0 0 0 12em;
+}
+.login p, .register p {
+    margin-left: 3.5em;
+    text-align: center;
+}
+.register form button {
+    margin: 0 0 0 11em;
+}
+.cart h2, .cart h3, .error h3 {
     margin: 1em 0 1em 3em;
     text-align: center;
 }
@@ -61,7 +72,11 @@ footer p {
     text-align: center;
 }
 .filters {
-    margin: 0 0 2em 62.5em;
+    margin: 10em 0 2em 22.5em;
+    width: 10%;
+}
+.filters button {
+    height: 3em;
 }
 .filters a:hover {
     font-weight: bold;
@@ -92,4 +107,13 @@ footer p {
 .messages {
     display: flex;
     flex-direction: column;
+}
+.profile {
+    display: flex;
+}
+.user {
+    margin-left: 8em;
+}
+.user h2 {
+    width: max-content;
 }

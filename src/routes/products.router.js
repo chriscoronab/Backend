@@ -5,7 +5,12 @@ import productModel from "../dao/models/products.model.js";
 const router = Router();
 const productManager = new ProductManager();
 
-router.get("/", async (req, res) => {
+function auth(req, res, next) {
+    if (!req.session.user) return res.status(200).redirect("/");
+    next();
+};
+
+router.get("/", auth, async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 10;
         const page = req.query.page || 1;
@@ -13,6 +18,7 @@ router.get("/", async (req, res) => {
         const sort = req.query.sort || "";
         const category = req.query.category || "";
         const filter = { ...(category && { category }) };
+        const user = req.session.user;
         let options = {
             limit,
             page: parseInt(page),
@@ -21,16 +27,27 @@ router.get("/", async (req, res) => {
         if (sort) {
             options["sort"] = { price: sort === "asc" ? 1 : -1 };
         };
-        const products = await productModel.paginate(filter, options);
-        products.status = "success";
-        products.payload = products.docs;
-        res.status(200).render("products", products);
+        const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, totalPages, totalDocs } = await productModel.paginate(filter, options);
+        const products = docs;
+        res.status(200).render("products", {
+            status: "success",
+            user,
+            products,
+            limit,
+            page,
+            hasPrevPage,
+            hasNextPage,
+            prevPage,
+            nextPage,
+            totalPages,
+            totalDocs
+        });
     } catch (error) {
         res.status(500).send({ error: error.message });
     };
 });
 
-router.get("/create", async (req, res) => {
+router.get("/create", auth, (req, res) => {
     try {
         res.status(200).render("create", {});
     } catch (error) {
@@ -41,7 +58,7 @@ router.get("/create", async (req, res) => {
 router.post("/create", async (req, res) => {
     try {
         const newProduct = req.body;
-        const product = await productManager.addProduct(newProduct);
+        await productManager.addProduct(newProduct);
         res.status(200).redirect("/products");
     } catch (error) {
         res.status(500).send({ error: error.message });

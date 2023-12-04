@@ -6,13 +6,29 @@ const productCollection = "products";
 const productSchema = new mongoose.Schema({
     title: {
         type: String,
-        index: true
+        index: true,
+        require: true
     },
-    description: String,
-    category: String,
-    price: Number,
-    thumbnail: String,
-    stock: Number
+    description: {
+        type: String,
+        require: true
+    },
+    category: {
+        type: String,
+        require: true
+    },
+    price: {
+        type: Number,
+        require: true
+    },
+    thumbnail: {
+        type: String,
+        require: true
+    },
+    stock: {
+        type: Number,
+        require: true
+    }
 });
 
 productSchema.plugin(mongoosePaginate);
