@@ -1,29 +1,26 @@
 import { Router } from "express";
-import UserManager from "../dao/managers/db/userManager.js";
-import userModel from "../dao/models/users.model.js";
+import passport from "passport";
 
 const router = Router();
-const userManager = new UserManager();
 
-router.post("/", async (req, res) => {
+router.post("/", passport.authenticate("login", { failureRedirect: "/session/loginError" }), async (req, res) => {
     try {
-        const { email, password } = req.body;
-        const user = await userModel.findOne({ email, password });
-        if (!user) return res.status(404).send({ error: "Credenciales incorrectas" });
-        req.session.user = user;
-        if (user.email === "adminCoder@coder.com" && user.password === "adminCod3r123") {
+        if (!req.user) return res.status(400).send({ error: "Credenciales inválidas" });
+        if (req.user.email === "adminCoder@coder.com") {
             req.session.user = {
-                name: `${user.first_name} ${user.last_name}`,
-                email: user.email,
-                age: user.age,
-                role: "admin"
+                first_name: req.user.first_name,
+                last_name: req.user.last_name,
+                email: req.user.email,
+                age: req.user.age,
+                role: "Admin"
             };
         } else {
             req.session.user = {
-                name: `${user.first_name} ${user.last_name}`,
-                email: user.email,
-                age: user.age,
-                role: "user"
+                first_name: req.user.first_name,
+                last_name: req.user.last_name,
+                email: req.user.email,
+                age: req.user.age,
+                role: "User"
             };
         };
         res.status(200).redirect("/products");
@@ -32,17 +29,35 @@ router.post("/", async (req, res) => {
     };
 });
 
-router.post("/register", async (req, res) => {
+router.get("/loginError", (req, res) => {
     try {
-        const { first_name, last_name, email, age, password } = req.body;
-        const user = await userManager.getUser(email);
-        if (user) return res.status(400).send({ error: `El usuario ${user.email} ya existe` });
-        const newUser = { first_name, last_name, email, age, password };
-        await userManager.createUser(newUser);
-        res.status(200).redirect("/products");
+        res.status(400).send({ error: "Error en el login" });
     } catch (error) {
         res.status(500).send({ error: error.message });
     };
+});
+
+router.post("/register", passport.authenticate("register", { failureRedirect: "/session/registerError" }), async (req, res) => {
+    try {
+        res.status(200).redirect("/");
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    };
+});
+
+router.get("/registerError", (req, res) => {
+    try {
+        res.status(400).send({ error: "Error en el registro" });
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    };
+});
+
+router.get("/github", passport.authenticate("github", { scope: ["user:email"] }), async (req, res) => {});
+
+router.get("/githubcallback", passport.authenticate("github", { failureRedirect: "/" }), (req, res) => {
+    req.session.user = req.user;
+    res.status(200).redirect("/products");
 });
 
 router.get("/logout", (req, res) => {

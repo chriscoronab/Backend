@@ -5,28 +5,28 @@ const userCollection = "users";
 const userSchema = new mongoose.Schema({
     first_name: {
         type: String,
-        require: true
+        required: true
     },
     last_name: {
         type: String,
-        require: true
+        required: true
     },
     email: {
         type: String,
         index: true,
-        require: true
+        required: true
     },
     age: {
         type: Number,
-        require: true
+        required: false
     },
     password: {
         type: String,
-        require: true
+        required: true
     },
     role: {
         type: String,
-        default: "user"
+        default: "User"
     }
 });
 

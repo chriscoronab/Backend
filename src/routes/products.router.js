@@ -6,7 +6,7 @@ const router = Router();
 const productManager = new ProductManager();
 
 function auth(req, res, next) {
-    if (!req.session.user) return res.status(200).redirect("/");
+    if (!req.session.user) return res.status(401).redirect("/");
     next();
 };
 
