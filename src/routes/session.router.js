@@ -53,7 +53,7 @@ router.get("/registerError", (req, res) => {
     };
 });
 
-router.get("/github", passport.authenticate("github", { scope: ["user:email"] }), async (req, res) => {});
+router.get("/github", passport.authenticate("github", { scope: ["user:email"] }), async (req, res) => { });
 
 router.get("/githubcallback", passport.authenticate("github", { failureRedirect: "/" }), (req, res) => {
     req.session.user = req.user;

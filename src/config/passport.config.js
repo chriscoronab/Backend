@@ -51,13 +51,14 @@ const initializePassport = () => {
         }
     ));
     passport.use("github", new GitHubStrategy({
-        clientID: "Iv1.2cca41997877194b",
-        clientSecret: "ae6538a3298b6ef0b22dc119139e8c0f15afb802",
+        clientID: "Iv1.e56c084091a0a3d7",
+        clientSecret: "753cbe8324e269a002cac96ab83afcec8d1b89dd",
         callbackURL: "http://127.0.0.1:8080/session/githubcallback"
     }, async (accessToken, refreshToken, profile, done) => {
         try {
             console.log(profile);
-            const user = await userModel.findOne({ email: profile._json.email });
+            const email = profile._json.email;
+            const user = await userModel.findOne({ email });
             if (user) {
                 console.log("Ya estás registrado");
                 return done(null, user);
@@ -65,7 +66,8 @@ const initializePassport = () => {
             const newUser = {
                 first_name: profile.displayName, 
                 last_name: "",
-                email: profile._json.email,
+                email,
+                age: "",
                 password: ""
             };
             const result = await userModel.create(newUser);
