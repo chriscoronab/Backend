@@ -8,7 +8,6 @@
         <p class="card-text"><b>Código: </b>{{payload._id}}</p>
         <p class="card-text"><b>Stock: </b>{{payload.stock}}</p>
         <button id="addToCart" class="btn btn-success">Agregar al carrito</button>
-        <button id="delete" class="btn btn-danger">Eliminar</button>
     </div>
 </div>
 <script>
@@ -22,33 +21,6 @@
             .then(() => {
                 Toastify({
                     text: "Producto agregado al carrito con éxito",
-                    duration: 4000,
-                    newWindow: true,
-                    close: true,
-                    gravity: "top",
-                    position: "right",
-                    stopOnFocus: true,
-                    style: {
-                        background: "green",
-                        borderRadius: "10px",
-                        fontWeight: "600",
-                    }
-                }).showToast();
-                document.location.href = "/products";
-            })
-        } catch (error) {
-            console.error(error);
-        };
-    };
-    document.querySelector("#delete").onclick = async (e) => {
-        try {
-            const pid = "{{payload._id}}";
-            await fetch(`/products/${pid}`, { 
-                method: "DELETE",
-            })
-            .then(() => {
-                Toastify({
-                    text: "Producto eliminado con éxito",
                     duration: 4000,
                     newWindow: true,
                     close: true,

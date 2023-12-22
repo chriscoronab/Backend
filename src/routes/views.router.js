@@ -3,7 +3,7 @@ import { Router } from "express";
 const router = Router();
 
 function publicAccess(req, res, next) {
-    if (req.session.user) return res.status(200).redirect("/products");
+    if (req.user) return res.status(200).redirect("/session/current");
     next();
 };
 

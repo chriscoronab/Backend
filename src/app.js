@@ -3,34 +3,34 @@ import handlebars from "express-handlebars";
 import { Server } from "socket.io";
 import mongoose from "mongoose";
 import session from "express-session";
-import MongoStore from "connect-mongo";
 import passport from "passport";
+import cookieParser from "cookie-parser";
+import { config } from "dotenv";
+import initializePassport from "./config/passport.config.js";
 import viewsRouter from "./routes/views.router.js";
 import sessionRouter from "./routes/session.router.js";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import chatRouter from "./routes/chat.router.js";
 import messageModel from "./dao/models/messages.model.js";
-import initializePassport from "./config/passport.config.js";
 import __dirname from "./utils.js";
 
+config({ path: ".env" });
+
 const app = express();
-const PORT = process.env.PORT || 8080;
-const mongoURL = "mongodb+srv://chriscoronab:Chris1995@clusterchris.yhwrcmd.mongodb.net/";
-const mongoDB = "ecommerce";
+const PORT = process.env.PORT;
+const MONGO_URL = process.env.MONGO_URL;
+const MONGO_DBNAME = process.env.MONGO_DBNAME;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.engine("hbs", handlebars.engine({ extname: ".hbs" }));
 app.set("views", __dirname + "/views");
 app.set("view engine", "hbs");
 
 app.use(session({
-    store: MongoStore.create({
-        mongoUrl: mongoURL,
-        dbName: mongoDB
-    }),
     secret: "secret",
     resave: true,
     saveUninitialized: true
@@ -48,7 +48,7 @@ app.use("/products", productsRouter);
 app.use("/carts", cartsRouter);
 app.use("/chat", chatRouter);
 
-mongoose.connect(mongoURL, { dbName: mongoDB })
+mongoose.connect(MONGO_URL, { dbName: MONGO_DBNAME })
     .then(() => {
         console.log("DB connected");
         const httpServer = app.listen(PORT, () => console.log(`Listening on port ${PORT}`));

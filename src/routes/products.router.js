@@ -1,12 +1,13 @@
 import { Router } from "express";
 import ProductManager from "../dao/managers/db/productManager.js";
 import productModel from "../dao/models/products.model.js";
+import { authorization } from "../utils.js";
 
 const router = Router();
 const productManager = new ProductManager();
 
 function auth(req, res, next) {
-    if (!req.session.user) return res.status(401).redirect("/");
+    if (!req.user) return res.status(401).redirect("/");
     next();
 };
 
@@ -14,11 +15,10 @@ router.get("/", auth, async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 10;
         const page = req.query.page || 1;
-        if (isNaN(page) || page <= 0 || page > 3) return res.status(404).render("error", {});
+        if (isNaN(page) || page <= 0 || page > 3) return res.status(404).send({ error: "La página solicitada no existe" });
         const sort = req.query.sort || "";
         const category = req.query.category || "";
         const filter = { ...(category && { category }) };
-        const user = req.session.user;
         let options = {
             limit,
             page: parseInt(page),
@@ -27,27 +27,15 @@ router.get("/", auth, async (req, res) => {
         if (sort) {
             options["sort"] = { price: sort === "asc" ? 1 : -1 };
         };
-        const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, totalPages, totalDocs } = await productModel.paginate(filter, options);
-        const products = docs;
-        res.status(200).render("products", {
-            status: "success",
-            user,
-            products,
-            limit,
-            page,
-            hasPrevPage,
-            hasNextPage,
-            prevPage,
-            nextPage,
-            totalPages,
-            totalDocs
-        });
+        const products = await productModel.paginate(filter, options);
+        products.payload = products.docs;
+        res.status(200).render("products", products);
     } catch (error) {
         res.status(500).send({ error: error.message });
     };
 });
 
-router.get("/create", auth, (req, res) => {
+router.get("/create", authorization("Admin"), (req, res) => {
     try {
         res.status(200).render("create", {});
     } catch (error) {
