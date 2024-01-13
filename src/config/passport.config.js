@@ -2,17 +2,12 @@ import passport from "passport";
 import local from "passport-local";
 import passportJWT from "passport-jwt";
 import GitHubStrategy from "passport-github2";
-import { config } from "dotenv";
+import { CLIENT_ID, CLIENT_SECRET, PRIVATE_KEY } from "./config.js";
 import userModel from "../dao/models/users.model.js";
 import { createHash, isValidPassword, generateToken } from "../utils.js";
 
-config({ path: ".env" });
-
 const LocalStrategy = local.Strategy;
 const JWTStrategy = passportJWT.Strategy;
-const CLIENT_ID = process.env.CLIENT_ID;
-const CLIENT_SECRET = process.env.CLIENT_SECRET;
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
 const initializePassport = () => {
     passport.use("register", new LocalStrategy({

@@ -5,22 +5,16 @@ import mongoose from "mongoose";
 import session from "express-session";
 import passport from "passport";
 import cookieParser from "cookie-parser";
-import { config } from "dotenv";
+import { PORT, MONGO_URL, MONGO_DBNAME, SECRET } from "./config/config.js";
 import initializePassport from "./config/passport.config.js";
 import viewsRouter from "./routes/views.router.js";
 import sessionRouter from "./routes/session.router.js";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
-import chatRouter from "./routes/chat.router.js";
 import messageModel from "./dao/models/messages.model.js";
 import __dirname from "./utils.js";
 
-config({ path: ".env" });
-
 const app = express();
-const PORT = process.env.PORT;
-const MONGO_URL = process.env.MONGO_URL;
-const MONGO_DBNAME = process.env.MONGO_DBNAME;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -31,7 +25,7 @@ app.set("views", __dirname + "/views");
 app.set("view engine", "hbs");
 
 app.use(session({
-    secret: "secret",
+    secret: SECRET,
     resave: true,
     saveUninitialized: true
 }));
@@ -46,7 +40,6 @@ app.use("/", viewsRouter);
 app.use("/session", sessionRouter);
 app.use("/products", productsRouter);
 app.use("/carts", cartsRouter);
-app.use("/chat", chatRouter);
 
 mongoose.connect(MONGO_URL, { dbName: MONGO_DBNAME })
     .then(() => {

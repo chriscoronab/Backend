@@ -2,13 +2,10 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { config } from "dotenv";
-
-config({ path: ".env" });
+import { PRIVATE_KEY } from "./config/config.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
 export default __dirname;
 
@@ -22,6 +19,16 @@ export const isValidPassword = (user, password) => {
 
 export const generateToken = user => {
     return jwt.sign({ user }, PRIVATE_KEY, { expiresIn: "24h" });
+};
+
+export function publicAccess(req, res, next) {
+    if (req.user) return res.status(200).redirect("/session/current");
+    next();
+};
+
+export function authentication(req, res, next) {
+    if (!req.user) return res.status(401).redirect("/");
+    next();
 };
 
 export const authorization = role => {

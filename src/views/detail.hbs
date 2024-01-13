@@ -1,12 +1,12 @@
 <div class="detail">
-    <img src="/images/{{payload.thumbnail}}" alt="{{payload.title}}">
+    <img src="/images/{{product.thumbnail}}" alt="{{product.title}}">
     <div class="card-body">
-        <h2>{{payload.title}}</h2>
-        <p class="card-text">{{payload.description}}</p>
-        <p class="card-text"><b>Categoría: </b>{{payload.category}}</p>
-        <p class="card-text"><b>Precio: </b>{{payload.price}}</p>
-        <p class="card-text"><b>Código: </b>{{payload._id}}</p>
-        <p class="card-text"><b>Stock: </b>{{payload.stock}}</p>
+        <h2>{{product.title}}</h2>
+        <p class="card-text">{{product.description}}</p>
+        <p class="card-text"><b>Categoría: </b>{{product.category}}</p>
+        <p class="card-text"><b>Precio: </b>{{product.price}}</p>
+        <p class="card-text"><b>Código: </b>{{product._id}}</p>
+        <p class="card-text"><b>Stock: </b>{{product.stock}}</p>
         <button id="addToCart" class="btn btn-success">Agregar al carrito</button>
     </div>
 </div>
@@ -14,7 +14,7 @@
     document.querySelector("#addToCart").onclick = async (e) => {
         try {
             const cid = "655bdcf9db12be4cc7e741d0";
-            const pid = "{{payload._id}}";
+            const pid = "{{product._id}}";
             await fetch(`/carts/${cid}/products/${pid}`, { 
                 method: "POST",
             })
