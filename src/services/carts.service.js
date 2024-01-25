@@ -9,4 +9,6 @@ export default class CartService {
     updateCart = async (cid, update) => { return this.dao.updateCart(cid, update) };
     deleteCartProduct = async (cid, pid) => { return this.dao.deleteCartProduct(cid, pid) };
     deleteAllCartProducts = async cid => { return this.dao.deleteAllCartProducts(cid) };
+    createTicket = async ticket => { return this.dao.createTicket(ticket) };
+    getTicketByID = async id => { return this.dao.getTicketByID(id) };
 };

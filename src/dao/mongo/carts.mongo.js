@@ -1,5 +1,6 @@
 import cartModel from "./models/carts.model.js";
 import productModel from "./models/products.model.js";
+import ticketModel from "./models/tickets.model.js";
 
 export default class CartManager {
     constructor() {
@@ -65,6 +66,20 @@ export default class CartManager {
             const cart = await this.getCartByID(cid);
             cart.products.splice(0, cart.products.length);
             return await this.updateCart(cid, cart);
+        } catch {
+            console.error(error);
+        };
+    };
+    createTicket = async ticket => {
+        try {
+            return await ticketModel.create(ticket);
+        } catch {
+            console.error(error);
+        };
+    };
+    getTicketByID = async id => {
+        try {
+            return await ticketModel.findById(id).lean().exec();
         } catch {
             console.error(error);
         };

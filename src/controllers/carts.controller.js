@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { cartService, productService, ticketService } from "../services/index.js";
+import { cartService, productService } from "../services/index.js";
 import transport from "../config/nodemailer.js";
 
 export const getCarts = async (req, res) => {
@@ -26,8 +26,9 @@ export const cartRender = async (req, res) => {
         const { cid } = req.params;
         const cart = await cartService.getCartByID(cid);
         if (!cart) return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
+        const userCart = req.user.cart;
         if (cart.products.length > 0) {
-            return res.status(200).render("cart", { cart });
+            return res.status(200).render("cart", { cart, userCart });
         } else {
             return res.status(200).render("emptyCart", { cart });
         };
@@ -102,60 +103,52 @@ export const deleteProductsCart = async (req, res) => {
     };
 };
 
+const calculateTotalAmount = async (cart) => {
+    let total = 0;
+    for (const item of cart) {
+        const product = await productService.getProductByID(item.product);
+        if (!product) return res.status(404).send({ error: `El producto con ID ${item.product} no existe` });
+        total += product.price * item.quantity;
+    };
+    total = Number(total.toFixed(2));
+    return total;
+};
+
 export const purchase = async (req, res) => {
     try {
         const { cid } = req.params;
         const cart = await cartService.getCartByID(cid);
+        if (!cart) return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
         const userEmail = req.user.email;
-        console.log(userEmail);
-        let total = 0;
-        if (cart) {
-            if (!cart.products.length) return res.send({ error: "Es necesario que agregues productos al carrito" });
-            const ticketProducts = [];
-            const rejectedProducts = [];
-            for (let i = 0; i < cart.products.length; i++) {
-                const cartProduct = cart.products[i];
-                const product = await productService.getProductByID(cartProduct.product._id);
-                if (cartProduct.quantity <= product[0].stock) {
-                    ticketProducts.push({
-                        pid: cartProduct._id,
-                        price: cartProduct.product.price
-                    });
-                    total += parseInt(cartProduct.quantity) * parseInt(product[0].price);
-                    await productService.updateStock(cartProduct._id, parseInt(cartProduct.product.stock) - parseInt(cartProduct.quantity));
-                } else {
-                    rejectedProducts.push(cartProduct._id);
-                };
+        const approvedProducts = [];
+        const rejectedProducts = [];
+        for (const item of cart.products) {
+            const product = await productService.getProductByID(item.product._id);
+            if (!product || product.stock === 0 || product.stock < item.quantity) {
+                rejectedProducts.push(item);
+                continue;
             };
+            if (product.stock >= item.quantity) {
+                product.stock -= (item.quantity/2);
+                await productService.updateProduct(product._id, product);
+                approvedProducts.push(item);
+            };
+        };
+        if (approvedProducts.length > 0) {
             const newTicket = {
                 code: uuidv4(),
-                purchase_datetime: new Date().toLocaleDateString(),
-                amount: parseInt(total),
+                purchase_datetime: new Date(),
+                amount: await calculateTotalAmount(approvedProducts),
                 purchaser: userEmail,
-                products: ticketProducts
+                products: approvedProducts.map(prod => ({ product: prod.product._id, quantity: prod.quantity })),
+                rejected_products: rejectedProducts.map(p => ({ product: p.product._id, quantity: p.quantity }))
             };
-            const ticket = await ticketService.createTicket(newTicket);
-            await cartService.updateCart(cid, cart);
-            console.log(ticket);
-            if (ticket) {
-                try {
-                    const mail = await transport.sendMail({
-                        from: "Flow NBA",
-                        to: "userEmail",
-                        subject: "Compra realizada",
-                        html: `<div>
-                            <h2>${req.user.first_name}, tu compra fue realizada con éxito</h2>
-                            <p><strong>Monto total:</strong> ${total}</p>
-                        </div>`
-                    });
-                    console.log(mail);
-                    res.status(200).send({ status: "success", payload: ticket });
-                } catch (error) {
-                    res.status(500).send({ error: "Hubo un error al enviar el correo" });
-                };
-            };
-        } else {
-            return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
+            const saveTicket = await cartService.createTicket(newTicket);
+            cart.ticket = saveTicket._id;
+            const ticket = await cartService.getTicketByID(saveTicket._id);
+            const notPurchased = rejectedProducts.length > 0 ? true : false;
+            // await sendEmail(userEmail, ticket);
+            return res.status(200).render("ticket", { ticket, notPurchased });
         };
     } catch (error) {
         res.status(500).send({ error: error.message });

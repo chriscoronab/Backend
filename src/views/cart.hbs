@@ -13,4 +13,34 @@
         </div>
         {{/each}}
     </div>
+    <div class="button">
+        <button id="purchase" class="btn btn-success">Comprar</button>
+    </div>
 </div>
+<script>
+    document.querySelector("#purchase").onclick = async (e) => {
+        try {
+            const cid = "{{userCart}}";
+            await fetch(`/carts/${cid}/purchase`)
+            .then(() => {
+                Toastify({
+                    text: "Compra realizada con éxito",
+                    duration: 4000,
+                    newWindow: true,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    stopOnFocus: true,
+                    style: {
+                        background: "green",
+                        borderRadius: "10px",
+                        fontWeight: "600",
+                    }
+                }).showToast();
+                document.location.href = `/carts/${cid}/purchase`;
+            })
+        } catch (error) {
+            console.error(error);
+        };
+    };
+</script>

@@ -8,5 +8,4 @@ export default class ProductService {
     updateProduct = async (pid, update) => { return this.dao.updateProduct(pid, update) };
     deleteProduct = async pid => { return this.dao.deleteProduct(pid) };
     paginate = async (filter, options) => { return this.dao.paginate(filter, options) };
-    updateStock = async (pid, quantity) => { return this.dao.updateStock(pid, quantity) };
 };

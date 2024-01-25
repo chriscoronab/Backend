@@ -46,11 +46,4 @@ export default class ProductManager {
             console.error(error);
         };
     }
-    updateStock = async (pid, quantity) => {
-        try {
-            return await this.model.updateOne({ _id: pid }, { stock: quantity });
-        } catch (error) {
-            console.error(error);
-        };
-    };
 };

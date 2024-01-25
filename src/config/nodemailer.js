@@ -10,4 +10,14 @@ const transport = nodemailer.createTransport({
     }
 });
 
+// const mail = await transport.sendMail({
+//     from: "Flow NBA",
+//     to: "userEmail",
+//     subject: "Compra realizada",
+//     html: `<div>
+//             <h2>${req.user.first_name}, tu compra fue realizada con éxito</h2>
+//             <p><strong>Monto total:</strong> ${total}</p>
+//         </div>`
+// });
+
 export default transport;

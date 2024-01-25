@@ -50,7 +50,7 @@ footer p {
 .register form button {
     margin: 0 0 0 11em;
 }
-.cart h3, .error h3 {
+.cart h3, .error h3, .ticket h3 {
     margin: 1em 0 1em 3em;
     text-align: center;
 }
@@ -118,4 +118,7 @@ footer p {
 }
 .user h2 {
     width: max-content;
+}
+.button {
+    margin: 1em 0 0 35em;
 }

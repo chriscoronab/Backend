@@ -20,6 +20,6 @@ router.delete("/:cid/products/:pid", authorization("User"), deleteProductCart);
 
 router.delete("/:cid", authorization("User"), deleteProductsCart);
 
-router.post("/:cid/purchase", authorization("User"), purchase);
+router.get("/:cid/purchase", authorization("User"), purchase);
 
 export default router;
