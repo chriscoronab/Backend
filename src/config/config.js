@@ -1,9 +1,10 @@
 import dotenv from "dotenv";
+import { opts } from "./commander.js";
 
 dotenv.config();
 
 export default {
-    persistence: process.env.PERSISTENCE,
+    persistence: opts.persistence || "MONGO",
     port: process.env.PORT || 8080,
     mongoURL: process.env.MONGO_URL,
     mongoDBName: process.env.MONGO_DBNAME,

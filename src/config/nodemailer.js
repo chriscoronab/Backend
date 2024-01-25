@@ -1,23 +1,34 @@
 import nodemailer from "nodemailer";
 import config from "./config.js";
 
-const transport = nodemailer.createTransport({
-    service: "gmail",
-    port: 587,
-    auth: {
-        user: config.nodemailerMail,
-        pass: config.nodemailerPassword
-    }
-});
+const sendEmail = async (userEmail, ticket) => {
+    try {
+        const transport = nodemailer.createTransport({
+            service: "gmail",
+            port: 587,
+            auth: {
+                user: config.nodemailerMail,
+                pass: config.nodemailerPassword
+            }
+        });
+        return await transport.sendMail({
+            from: "Flow NBA",
+            to: userEmail,
+            subject: "Ticket de compra",
+            html: `<div>
+                <h3>¡Muchas gracias por tu compra!</h3>
+                <br>
+                <p><b>N° de compra:</b> ${ticket.code}</p>
+                <p><b>Usuario:</b> ${ticket.purchaser}</p>
+                <p><b>Fecha:</b> ${ticket.purchase_datetime}</p>
+                <p><b>Total:</b> ${ticket.amount}</p>
+                <br>
+                <p>* Los productos sin stock no pudieron ser procesados</p>
+                </div>`
+        });
+    } catch (error) {
+        console.error(error);
+    };
+};
 
-// const mail = await transport.sendMail({
-//     from: "Flow NBA",
-//     to: "userEmail",
-//     subject: "Compra realizada",
-//     html: `<div>
-//             <h2>${req.user.first_name}, tu compra fue realizada con éxito</h2>
-//             <p><strong>Monto total:</strong> ${total}</p>
-//         </div>`
-// });
-
-export default transport;
+export default sendEmail;

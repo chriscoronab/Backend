@@ -13,6 +13,7 @@
   "description": "Backend proyect",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "commander": "^11.1.0",
     "connect-mongo": "^5.1.0",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.3.1",
@@ -22,10 +23,12 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.0",
     "mongoose-paginate-v2": "^1.7.4",
+    "nodemailer": "^6.9.8",
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
-    "socket.io": "^4.7.2"
+    "socket.io": "^4.7.2",
+    "uuid": "^9.0.1"
   }
 }

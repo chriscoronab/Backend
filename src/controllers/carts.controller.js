@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { cartService, productService } from "../services/index.js";
-import transport from "../config/nodemailer.js";
+import sendEmail from "../config/nodemailer.js";
 
 export const getCarts = async (req, res) => {
     try {
@@ -144,10 +144,9 @@ export const purchase = async (req, res) => {
                 rejected_products: rejectedProducts.map(p => ({ product: p.product._id, quantity: p.quantity }))
             };
             const saveTicket = await cartService.createTicket(newTicket);
-            cart.ticket = saveTicket._id;
             const ticket = await cartService.getTicketByID(saveTicket._id);
             const notPurchased = rejectedProducts.length > 0 ? true : false;
-            // await sendEmail(userEmail, ticket);
+            await sendEmail(userEmail, ticket);
             return res.status(200).render("ticket", { ticket, notPurchased });
         };
     } catch (error) {
