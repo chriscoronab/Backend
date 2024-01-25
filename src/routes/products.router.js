@@ -10,10 +10,10 @@ router.get("/create", authorization("Admin"), createRender);
 
 router.get("/:pid", authentication, productRender);
 
-router.post("/create", postProduct);
+router.post("/create", authorization("Admin"), postProduct);
 
-router.put("/:pid", putProduct);
+router.put("/:pid", authorization("Admin"), putProduct);
 
-router.delete("/:pid", deleteProduct);
+router.delete("/:pid", authorization("Admin"), deleteProduct);
 
 export default router;

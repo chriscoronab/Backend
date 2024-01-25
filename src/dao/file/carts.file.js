@@ -1,13 +1,22 @@
 import fs from "fs";
-import ProductManager from "./productManager.js";
+import ProductManager from "./products.file.js";
 
 const productManager = new ProductManager();
 
 export default class CartManager {
     constructor() {
-        this.path = "./src/dao/files/carts.json";
+        this.path = "./src/files/carts.json";
         this.format = "utf-8";
         this.carts = [];
+    };
+    getCarts = async () => {
+        try {
+            const data = await fs.promises.readFile(this.path, this.format);
+            this.carts = JSON.parse(data);
+            return this.carts;
+        } catch (error) {
+            return `File not found`;
+        };
     };
     createCart = async () => {
         try {
@@ -24,16 +33,7 @@ export default class CartManager {
             return `No se pudo crear el carrito`;
         };
     };
-    getCarts = async () => {
-        try {
-            const data = await fs.promises.readFile(this.path, this.format);
-            this.carts = JSON.parse(data);
-            return this.carts;
-        } catch (error) {
-            return `File not found`;
-        };
-    };
-    getCartByID = async (cid) => {
+    getCartByID = async cid => {
         try {
             const carts = await this.getCarts();
             const cart = carts.find(c => c.id === cid);

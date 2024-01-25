@@ -2,7 +2,7 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { PRIVATE_KEY } from "./config/config.js";
+import config from "./config/config.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -18,11 +18,11 @@ export const isValidPassword = (user, password) => {
 };
 
 export const generateToken = user => {
-    return jwt.sign({ user }, PRIVATE_KEY, { expiresIn: "24h" });
+    return jwt.sign({ user }, config.privateKey, { expiresIn: "24h" });
 };
 
 export function publicAccess(req, res, next) {
-    if (req.user) return res.status(200).redirect("/session/current");
+    if (req.session.user) return res.status(200).redirect("/session/current");
     next();
 };
 

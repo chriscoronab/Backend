@@ -2,15 +2,15 @@ import fs from "fs";
 
 export default class ProductManager {
     constructor() {
-        this.path = "./src/dao/files/products.json";
+        this.path = "./src/files/products.json";
         this.format = "utf-8";
         this.products = [];
     };
-    validateCode = async (code) => {
+    validateCode = async code => {
         const products = await this.getProducts();
         return products.some(producto => producto.code === code);
     };
-    getProducts = async (limit) => {
+    getProducts = async limit => {
         try {
             const data = await fs.promises.readFile(this.path, this.format);
             this.products = JSON.parse(data);
@@ -20,7 +20,7 @@ export default class ProductManager {
             return `File not found`;
         };
     };
-    addProduct = async (prod) => {
+    addProduct = async prod => {
         try {
             const { title, description, category, price, thumbnail, code, stock } = prod;
             const products = await this.getProducts();
@@ -46,7 +46,7 @@ export default class ProductManager {
             return `No se pudo agregar el producto`;
         };
     };
-    getProductByID = async (id) => {
+    getProductByID = async id => {
         try {
             const products = await this.getProducts();
             const producto = products.find(product => product.id === id);
@@ -69,7 +69,7 @@ export default class ProductManager {
             return `Error al actualizar el producto ${id}`;
         };
     };
-    deleteProduct = async (id) => {
+    deleteProduct = async id => {
         try {
             const products = await this.getProducts();
             const producto = await this.getProductByID(id);

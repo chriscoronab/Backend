@@ -1,4 +1,4 @@
-import messageModel from "../dao/models/messages.model.js";
+import { messageService } from "../services/index.js";
 
 export const loginRender = (req, res) => {
     try {
@@ -18,7 +18,7 @@ export const registerRender = (req, res) => {
 
 export const chatRender = async (req, res) => {
     try {
-        const messages = await messageModel.find().lean().exec();
+        const messages = await messageService.renderMessages();
         res.status(200).render("chat", { messages });
     } catch (error) {
         res.status(500).send({ error: error.message });

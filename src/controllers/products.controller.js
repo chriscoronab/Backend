@@ -1,7 +1,4 @@
-import ProductManager from "../dao/managers/db/productManager.js";
-import productModel from "../dao/models/products.model.js";
-
-const productManager = new ProductManager();
+import { productService } from "../services/index.js";
 
 export const productsRender = async (req, res) => {
     try {
@@ -19,7 +16,7 @@ export const productsRender = async (req, res) => {
         if (sort) {
             options["sort"] = { price: sort === "asc" ? 1 : -1 };
         };
-        const products = await productModel.paginate(filter, options);
+        const products = await productService.paginate(filter, options);
         products.payload = products.docs;
         res.status(200).render("products", products);
     } catch (error) {
@@ -38,9 +35,10 @@ export const createRender = (req, res) => {
 export const productRender = async (req, res) => {
     try {
         const { pid } = req.params;
-        const product = await productManager.getProductByID(pid);
+        const product = await productService.getProductByID(pid);
         if (!product) return res.status(404).send({ error: `El producto con ID ${pid} no existe` });
-        res.status(200).render("detail", { product });
+        const cart = req.user.cart;
+        res.status(200).render("detail", { product, cart });
     } catch (error) {
         res.status(500).send({ error: error.message });
     };
@@ -49,7 +47,7 @@ export const productRender = async (req, res) => {
 export const postProduct = async (req, res) => {
     try {
         const newProduct = req.body;
-        await productManager.addProduct(newProduct);
+        await productService.addProduct(newProduct);
         res.status(200).redirect("/products");
     } catch (error) {
         res.status(500).send({ error: error.message });
@@ -60,7 +58,7 @@ export const putProduct = async (req, res) => {
     try {
         const { pid } = req.params;
         const product = req.body;
-        const updatedProduct = await productManager.updateProduct(pid, product);
+        const updatedProduct = await productService.updateProduct(pid, product);
         if (!updatedProduct) return res.status(404).send({ error: `El producto con ID ${pid} no existe` });
         res.status(200).send({ status: "success", payload: updatedProduct });
     } catch (error) {
@@ -71,7 +69,7 @@ export const putProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
     try {
         const { pid } = req.params;
-        const product = await productManager.deleteProduct(pid);
+        const product = await productService.deleteProduct(pid);
         if (!product) return res.status(404).send({ error: `El producto con ID ${pid} no existe` });
         res.status(200).send({ status: "success", payload: product });
     } catch (error) {

@@ -1,17 +1,9 @@
-import cartModel from "../../models/carts.model.js";
-import productModel from "../../models/products.model.js";
+import cartModel from "./models/carts.model.js";
+import productModel from "./models/products.model.js";
 
 export default class CartManager {
     constructor() {
         this.model = cartModel;
-    };
-    createCart = async (cart) => {
-        try {
-            const newCart = await this.model.create(cart);
-            return newCart;
-        } catch (error) {
-            console.error(error);
-        };
     };
     getCarts = async () => {
         try {
@@ -20,10 +12,16 @@ export default class CartManager {
             console.error(error);
         };
     };
-    getCartByID = async (cid) => {
+    createCart = async cart => {
         try {
-            const cart = await this.model.findOne({ _id: cid }).lean();
-            return cart;
+            return await this.model.create(cart);
+        } catch (error) {
+            console.error(error);
+        };
+    };
+    getCartByID = async cid => {
+        try {
+            return await this.model.findOne({ _id: cid }).lean();
         } catch (error) {
             console.error(error);
         };
@@ -39,16 +37,14 @@ export default class CartManager {
             } else {
                 existingProduct.quantity ++;
             };
-            const updatedCart = await this.updateCart(cid, cart);
-            return updatedCart;
+            return await this.updateCart(cid, cart);
         } catch (error) {
             console.error(error);
         };
     };
     updateCart = async (cid, update) => {
         try {
-            const cart = await this.model.updateOne({ _id: cid }, update);
-            return cart;
+            return await this.model.updateOne({ _id: cid }, update);
         } catch (error) {
             console.error(error);
         };
@@ -59,18 +55,16 @@ export default class CartManager {
             const product = cart.products.find(item => item.product._id == pid);
             if (!product) return null;
             cart.products.splice(product, 1);
-            const updatedCart = await this.updateCart(cid, cart);
-            return updatedCart;
+            return await this.updateCart(cid, cart);
         } catch {
             console.error(error);
         };
     }
-    deleteAllCartProducts = async (cid) => {
+    deleteAllCartProducts = async cid => {
         try {
             const cart = await this.getCartByID(cid);
             cart.products.splice(0, cart.products.length);
-            const updatedCart = await this.updateCart(cid, cart);
-            return updatedCart;
+            return await this.updateCart(cid, cart);
         } catch {
             console.error(error);
         };

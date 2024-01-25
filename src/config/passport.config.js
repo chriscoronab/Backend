@@ -2,8 +2,8 @@ import passport from "passport";
 import local from "passport-local";
 import passportJWT from "passport-jwt";
 import GitHubStrategy from "passport-github2";
-import { CLIENT_ID, CLIENT_SECRET, PRIVATE_KEY } from "./config.js";
-import userModel from "../dao/models/users.model.js";
+import config from "./config.js";
+import { userService, cartService } from "../services/index.js";
 import { createHash, isValidPassword, generateToken } from "../utils.js";
 
 const LocalStrategy = local.Strategy;
@@ -16,19 +16,24 @@ const initializePassport = () => {
     }, async (req, username, password, done) => {
         try {
             const { first_name, last_name, email, age } = req.body;
-            const user = await userModel.findOne({ email: username });
+            const user = await userService.getUserByUsername({ email: username });
             if (user) {
                 console.error(`El usuario ${user.email} ya existe`);
                 return done(null, false);
             };
+            const cartNewUser = await cartService.createCart({});
             const newUser = {
                 first_name,
                 last_name,
                 email,
                 age,
-                password: createHash(password)
+                password: createHash(password),
+                cart: cartNewUser._id
             };
-            const result = await userModel.create(newUser);
+            if (newUser.email === "adminCoder@coder.com") {
+                newUser.role = "Admin"
+            };
+            const result = await userService.createUser(newUser);
             return done(null, result);
         } catch (error) {
             return done({ error: error.message });
@@ -38,7 +43,7 @@ const initializePassport = () => {
         { usernameField: "email" },
         async (username, password, done) => {
             try {
-                const user = await userModel.findOne({ email: username });
+                const user = await userService.getUserByUsername({ email: username });
                 if (!user) {
                     console.error("El usuario no existe");
                     return done(null, false);
@@ -46,9 +51,6 @@ const initializePassport = () => {
                 if (!isValidPassword(user, password)) {
                     console.error("Contraseña incorrecta");
                     return done(null, false);
-                };
-                if (user.email === "adminCoder@coder.com") {
-                    user.role = "Admin"
                 };
                 const token = generateToken(user);
                 user.token = token;
@@ -59,23 +61,28 @@ const initializePassport = () => {
         }
     ));
     passport.use("github", new GitHubStrategy({
-        clientID: CLIENT_ID,
-        clientSecret: CLIENT_SECRET,
+        clientID: config.clientID,
+        clientSecret: config.clientSecret,
         callbackURL: "http://127.0.0.1:8080/session/githubcallback"
     }, async (accessToken, refreshToken, profile, done) => {
         try {
-            console.log(profile);
             const email = profile._json.email;
-            let user = await userModel.findOne({ email });
+            let user = await userService.getUserByEmail(email);
             if (!user) {
+                const cartNewUser = await cartService.createCart({});
                 user = {
                     first_name: profile.displayName, 
                     last_name: "",
                     email,
                     age: "",
-                    password: ""
+                    password: "",
+                    cart: cartNewUser._id,
+                    role: "User"
                 };
-                const result = await userModel.create(user);
+                if (user.email === "adminCoder@coder.com") {
+                    user.role = "Admin"
+                };
+                const result = await userService.createUser(user);
                 user._id = result._id;
             };
             const token = generateToken(user);
@@ -87,7 +94,7 @@ const initializePassport = () => {
     }));
     passport.use("jwt", new JWTStrategy({
         jwtFromRequest: passportJWT.ExtractJwt.fromExtractors([req => req?.cookies?.cookieJWT ?? null]),
-        secretOrKey: PRIVATE_KEY
+        secretOrKey: config.privateKey
     }, (jwt_payload, done) => {
         try {
             return done(null, jwt_payload);
@@ -99,7 +106,7 @@ const initializePassport = () => {
         done(null, user._id);
     });
     passport.deserializeUser(async(id, done) => {
-        const user = await userModel.findById(id);
+        const user = await userService.getUserByID(id);
         done(null, user);
     });
 };

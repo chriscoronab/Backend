@@ -13,7 +13,7 @@
 <script>
     document.querySelector("#addToCart").onclick = async (e) => {
         try {
-            const cid = "655bdcf9db12be4cc7e741d0";
+            const cid = "{{cart}}";
             const pid = "{{product._id}}";
             await fetch(`/carts/${cid}/products/${pid}`, { 
                 method: "POST",
@@ -33,7 +33,7 @@
                         fontWeight: "600",
                     }
                 }).showToast();
-                document.location.href = "/products";
+                document.location.href = `/carts/${cid}`;
             })
         } catch (error) {
             console.error(error);
