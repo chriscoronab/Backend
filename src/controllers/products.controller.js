@@ -4,7 +4,10 @@ export const productsRender = async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 10;
         const page = req.query.page || 1;
-        if (isNaN(page) || page <= 0 || page > 3) return res.status(404).send({ error: "La página solicitada no existe" });
+        if (isNaN(page) || page <= 0 || page > 3) {
+            req.logger.error("La página solicitada no existe");
+            return res.status(404).send({ error: "La página solicitada no existe" });
+        };
         const sort = req.query.sort || "";
         const category = req.query.category || "";
         const filter = { ...(category && { category }) };
@@ -36,7 +39,10 @@ export const productRender = async (req, res) => {
     try {
         const { pid } = req.params;
         const product = await productService.getProductByID(pid);
-        if (!product) return res.status(404).send({ error: `El producto con ID ${pid} no existe` });
+        if (!product) {
+            req.logger.error(`El producto con ID ${pid} no existe`);
+            return res.status(404).send({ error: `El producto con ID ${pid} no existe` });
+        };
         const cart = req.user.cart;
         res.status(200).render("detail", { product, cart });
     } catch (error) {
@@ -59,7 +65,10 @@ export const putProduct = async (req, res) => {
         const { pid } = req.params;
         const product = req.body;
         const updatedProduct = await productService.updateProduct(pid, product);
-        if (!updatedProduct) return res.status(404).send({ error: `El producto con ID ${pid} no existe` });
+        if (!updatedProduct) {
+            req.logger.error(`El producto con ID ${pid} no existe`);
+            return res.status(404).send({ error: `El producto con ID ${pid} no existe` });
+        };
         res.status(200).send({ status: "success", payload: updatedProduct });
     } catch (error) {
         res.status(500).send({ error: error.message });
@@ -70,7 +79,10 @@ export const deleteProduct = async (req, res) => {
     try {
         const { pid } = req.params;
         const product = await productService.deleteProduct(pid);
-        if (!product) return res.status(404).send({ error: `El producto con ID ${pid} no existe` });
+        if (!product) {
+            req.logger.error(`El producto con ID ${pid} no existe`);
+            return res.status(404).send({ error: `El producto con ID ${pid} no existe` });
+        };
         res.status(200).send({ status: "success", payload: product });
     } catch (error) {
         res.status(500).send({ error: error.message });

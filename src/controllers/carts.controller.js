@@ -25,13 +25,13 @@ export const cartRender = async (req, res) => {
     try {
         const { cid } = req.params;
         const cart = await cartService.getCartByID(cid);
-        if (!cart) return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
-        const userCart = req.user.cart;
-        if (cart.products.length > 0) {
-            return res.status(200).render("cart", { cart, userCart });
-        } else {
-            return res.status(200).render("emptyCart", { cart });
+        if (!cart) {
+            req.logger.error(`El carrito con ID ${cid} no existe`);
+            return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
         };
+        const userCart = req.user.cart;
+        const productsInCart = cart.products.length > 0 ? true : false;
+        return res.status(200).render("cart", { cart, userCart, productsInCart });
     } catch (error) {
         res.status(500).send({ error: error.message });
     };
@@ -42,7 +42,10 @@ export const postProductCart = async (req, res) => {
         const { cid } = req.params;
         const { pid } = req.params;
         const cart = await cartService.addProductToCart(cid, pid);
-        if (!cart) return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
+        if (!cart) {
+            req.logger.error(`El carrito con ID ${cid} no existe`);
+            return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
+        };
         res.status(200).send({ status: "success", payload: cart });
     } catch (error) {
         res.status(500).send({ error: error.message });
@@ -54,7 +57,10 @@ export const putCart = async (req, res) => {
         const { cid } = req.params;
         const carrito = req.body;
         const cart = await cartService.getCartByID(cid);
-        if (!cart) return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
+        if (!cart) {
+            req.logger.error(`El carrito con ID ${cid} no existe`);
+            return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
+        };
         cart.products = carrito;
         const updatedCart = await cartService.updateCart(cid, cart);
         res.status(200).send({ status: "success", payload: updatedCart });
@@ -68,10 +74,16 @@ export const putProductCart = async (req, res) => {
         const { cid } = req.params;
         const { pid } = req.params;
         const newQuantity = req.body.quantity;
-        if (newQuantity < 0) return res.status(400).send({ error: "La cantidad debe ser mayor a 0" });
+        if (newQuantity < 0) {
+            req.logger.warning("La cantidad debe ser mayor a 0");
+            return res.status(400).send({ error: "La cantidad debe ser mayor a 0" });
+        };
         const cart = await cartService.getCartByID(cid);
         const product = cart.products.find(item => item.product._id == pid);
-        if (!cart || !product) return res.status(404).send({ error: "Carrito o producto no existe" });
+        if (!cart || !product) {
+            req.logger.error("Carrito o producto no existe");
+            return res.status(404).send({ error: "Carrito o producto no existe" });
+        };
         product.quantity = newQuantity;
         const updatedCart = await cartService.updateCart(cid, cart);
         res.status(200).send({ status: "success", payload: updatedCart });
@@ -85,7 +97,10 @@ export const deleteProductCart = async (req, res) => {
         const { cid } = req.params;
         const { pid } = req.params;
         const cart = await cartService.deleteCartProduct(cid, pid);
-        if (!cart) return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
+        if (!cart) {
+            req.logger.error(`El carrito con ID ${cid} no existe`);
+            return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
+        };
         res.status(200).send({ status: "success", payload: cart });
     } catch (error) {
         res.status(500).send({ error: error.message });
@@ -96,18 +111,21 @@ export const deleteProductsCart = async (req, res) => {
     try {
         const { cid } = req.params;
         const cart = await cartService.deleteAllCartProducts(cid);
-        if (!cart) return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
+        if (!cart) {
+            req.logger.error(`El carrito con ID ${cid} no existe`);
+            return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
+        };
         res.status(200).send({ status: "success", payload: cart });
     } catch (error) {
         res.status(500).send({ error: error.message });
     };
 };
 
-const calculateTotalAmount = async (cart) => {
+const calculateTotalAmount = async cart => {
     let total = 0;
     for (const item of cart) {
         const product = await productService.getProductByID(item.product);
-        if (!product) return res.status(404).send({ error: `El producto con ID ${item.product} no existe` });
+        if (!product) return req.logger.error(`El producto con ID ${item.product} no existe`);
         total += product.price * item.quantity;
     };
     total = Number(total.toFixed(2));
@@ -118,7 +136,10 @@ export const purchase = async (req, res) => {
     try {
         const { cid } = req.params;
         const cart = await cartService.getCartByID(cid);
-        if (!cart) return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
+        if (!cart) {
+            req.logger.error(`El carrito con ID ${cid} no existe`);
+            return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
+        };
         const userEmail = req.user.email;
         const approvedProducts = [];
         const rejectedProducts = [];
@@ -129,7 +150,7 @@ export const purchase = async (req, res) => {
                 continue;
             };
             if (product.stock >= item.quantity) {
-                product.stock -= (item.quantity/2);
+                product.stock -= item.quantity;
                 await productService.updateProduct(product._id, product);
                 approvedProducts.push(item);
             };
@@ -148,8 +169,11 @@ export const purchase = async (req, res) => {
             const notPurchased = rejectedProducts.length > 0 ? true : false;
             await sendEmail(userEmail, ticket);
             return res.status(200).render("ticket", { ticket, notPurchased });
+        } else {
+            req.logger.error("La compra no pudo ser procesada por falta de stock");
+            return res.status(403).send({ error: "La compra no pudo ser procesada por falta de stock" });
         };
     } catch (error) {
         res.status(500).send({ error: error.message });
     };
-};
+}

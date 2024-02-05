@@ -1,0 +1,4 @@
+{"level":"fatal","message":"Fatal"}
+{"level":"error","message":"Error"}
+{"level":"error","message":"El producto con ID 7 no existe"}
+{"level":"error","message":"La página solicitada no existe"}

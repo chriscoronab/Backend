@@ -13,5 +13,6 @@ export default {
     clientSecret: process.env.CLIENT_SECRET,
     privateKey: process.env.PRIVATE_KEY,
     nodemailerMail: process.env.NODEMAILER_MAIL,
-    nodemailerPassword: process.env.NODEMAILER_PASSWORD
+    nodemailerPassword: process.env.NODEMAILER_PASSWORD,
+    nodeEnv: process.env.NODE_ENV
 };

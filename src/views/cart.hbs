@@ -1,4 +1,5 @@
 <div class="cart">
+    {{#if productsInCart}}
     <h3>Productos del carrito</h3>
     <div class="products">
         {{#each cart.products}}
@@ -16,29 +17,32 @@
     <div class="button">
         <button id="purchase" class="btn btn-success">Comprar</button>
     </div>
+    {{else}}
+    <h3>No hay productos en el carrito</h3>
+    <div class="button">
+        <a href="/products"><button class="btn btn-primary">Ver productos</button></a>
+    </div>
+    {{/if}}
 </div>
 <script>
     document.querySelector("#purchase").onclick = async (e) => {
         try {
             const cid = "{{userCart}}";
-            await fetch(`/carts/${cid}/purchase`)
-            .then(() => {
-                Toastify({
-                    text: "Compra realizada con éxito",
-                    duration: 4000,
-                    newWindow: true,
-                    close: true,
-                    gravity: "top",
-                    position: "right",
-                    stopOnFocus: true,
-                    style: {
-                        background: "green",
-                        borderRadius: "10px",
-                        fontWeight: "600",
-                    }
-                }).showToast();
-                document.location.href = `/carts/${cid}/purchase`;
-            })
+            Toastify({
+                text: "Compra realizada con éxito",
+                duration: 4000,
+                newWindow: true,
+                close: true,
+                gravity: "top",
+                position: "right",
+                stopOnFocus: true,
+                style: {
+                    background: "green",
+                    borderRadius: "10px",
+                    fontWeight: "600",
+                }
+            }).showToast();
+            document.location.href = `/carts/${cid}/purchase`;
         } catch (error) {
             console.error(error);
         };

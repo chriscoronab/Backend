@@ -6,10 +6,12 @@ import passport from "passport";
 import cookieParser from "cookie-parser";
 import config from "./config/config.js";
 import initializePassport from "./config/passport.config.js";
+import logger from "./utils/logger.js";
 import viewsRouter from "./routes/views.router.js";
 import sessionRouter from "./routes/session.router.js";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
+import loggerRouter from "./routes/logger.router.js";
 import { messageService } from "./services/index.js";
 import __dirname from "./utils.js";
 
@@ -17,7 +19,9 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(__dirname + "/public"));
 app.use(cookieParser());
+app.use(logger);
 
 app.engine("hbs", handlebars.engine({ extname: ".hbs" }));
 app.set("views", __dirname + "/views");
@@ -33,12 +37,11 @@ initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(express.static(__dirname + "/public"));
-
 app.use("/", viewsRouter);
 app.use("/session", sessionRouter);
 app.use("/products", productsRouter);
 app.use("/carts", cartsRouter);
+app.use("/logger", loggerRouter);
 
 const httpServer = app.listen(config.port, () => console.log(`Listening on port ${config.port}`));
 httpServer.on("Error", error => console.log(`${error.message}`));
