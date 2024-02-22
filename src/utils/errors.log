@@ -2,3 +2,8 @@
 {"level":"error","message":"Error"}
 {"level":"error","message":"El producto con ID 7 no existe"}
 {"level":"error","message":"La página solicitada no existe"}
+{"level":"error","message":"El usuario chriscoronab3@gmail.com no está registrado"}
+{"level":"error","message":"El link ha expirado. Por favor, genere uno nuevo."}
+{"level":"error","message":"La contraseña debe ser diferente a la anterior"}
+{"level":"error","message":"El usuario con ID 3 no existe"}
+{"level":"error","message":"No es posible cambiar el rol del Admin"}

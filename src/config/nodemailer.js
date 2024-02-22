@@ -1,18 +1,19 @@
 import nodemailer from "nodemailer";
 import config from "./config.js";
 
-const sendEmail = async (userEmail, ticket) => {
+const transport = nodemailer.createTransport({
+    service: "gmail",
+    port: 587,
+    auth: {
+        user: config.nodemailerMail,
+        pass: config.nodemailerPassword
+    }
+});
+
+export const sendTicketEmail = async (userEmail, ticket) => {
     try {
-        const transport = nodemailer.createTransport({
-            service: "gmail",
-            port: 587,
-            auth: {
-                user: config.nodemailerMail,
-                pass: config.nodemailerPassword
-            }
-        });
         return await transport.sendMail({
-            from: "Flow NBA",
+            from: config.nodemailerMail,
             to: userEmail,
             subject: "Ticket de compra",
             html: `<div>
@@ -31,4 +32,20 @@ const sendEmail = async (userEmail, ticket) => {
     };
 };
 
-export default sendEmail;
+export const sendPasswordRecoveryEmail = async (email, token) => {
+    try {
+        const link = `http://127.0.0.1:8080/reset-password?token=${token}`;
+        return await transport.sendMail({
+            from: config.nodemailerMail,
+            to: email,
+            subject:"Flow NBA: Restablecer contraseña",
+            html: `<div>
+            <p>Para restablecer tu contraseña, haz click en el siguiente link:</p>
+            <br>
+            <a href="${link}"><button>Restablecer contraseña</button></a>        
+            </div>`
+        });
+    } catch (error) {
+        console.error(error);
+    };
+};

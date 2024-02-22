@@ -25,9 +25,23 @@ export default class UserManager {
             console.error(error);
         };
     };
-    getUserByID = async id => {
+    getUserByID = async uid => {
         try {
-            return await this.model.findById(id);
+            return await this.model.findById(uid);
+        } catch (error) {
+            console.error(error);
+        };
+    };
+    updateUser = async (uid, update) => {
+        try {
+            return await this.model.updateOne({ _id: uid }, update);
+        } catch (error) {
+            console.error(error);
+        };
+    };
+    updatePassword = async (user, newPassword) => {
+        try {
+            return await this.model.updateOne({ _id: user._id }, { password: newPassword });
         } catch (error) {
             console.error(error);
         };

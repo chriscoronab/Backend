@@ -1,5 +1,4 @@
 import cartModel from "./models/carts.model.js";
-import productModel from "./models/products.model.js";
 import ticketModel from "./models/tickets.model.js";
 
 export default class CartManager {
@@ -30,13 +29,11 @@ export default class CartManager {
     addProductToCart = async (cid, pid) => {
         try {
             const cart = await this.getCartByID(cid);
-            const producto = await productModel.findById(pid);
-            if (!producto) return null;
-            const existingProduct = cart.products.find(item => item.product._id == pid);
-            if (!existingProduct) {
+            const producto = cart.products.find(item => item.product._id == pid);
+            if (!producto) {
                 cart.products.push({ product: pid, quantity: 1 });
             } else {
-                existingProduct.quantity ++;
+                producto.quantity++;
             };
             return await this.updateCart(cid, cart);
         } catch (error) {

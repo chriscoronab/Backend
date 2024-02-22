@@ -1,11 +1,11 @@
 import { v4 as uuidv4 } from "uuid";
-import { cartService, productService } from "../services/index.js";
-import sendEmail from "../config/nodemailer.js";
+import { cartService, productService } from "../repositories/index.js";
+import { sendTicketEmail } from "../config/nodemailer.js";
 
 export const getCarts = async (req, res) => {
     try {
         const carts = await cartService.getCarts();
-        res.status(200).send({ status: "success", payload: carts });
+        return res.status(200).send({ status: "success", payload: carts });
     } catch (error) {
         res.status(500).send({ error: error.message });
     };
@@ -15,7 +15,7 @@ export const postCart = async (req, res) => {
     try {
         const newCart = req.body;
         const cart = await cartService.createCart(newCart);
-        res.status(200).send({ status: "success", payload: cart });
+        return res.status(200).send({ status: "success", payload: cart });
     } catch (error) {
         res.status(500).send({ error: error.message });
     };
@@ -41,12 +41,23 @@ export const postProductCart = async (req, res) => {
     try {
         const { cid } = req.params;
         const { pid } = req.params;
-        const cart = await cartService.addProductToCart(cid, pid);
-        if (!cart) {
-            req.logger.error(`El carrito con ID ${cid} no existe`);
-            return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
+        const cart = await cartService.getCartByID(cid);
+        const product = await productService.getProductByID(pid);
+        if (!cart || !product) {
+            req.logger.error("El carrito o producto no existe");
+            return res.status(404).send({ error: "El carrito o producto no existe" });
         };
-        res.status(200).send({ status: "success", payload: cart });
+        const user = req.user;
+        if (user.role === "Premium") {
+            const validOwner = user.email === product.owner;
+            if (validOwner) {
+                req.logger.warning("No puedes agregar al carrito un producto creado por ti");
+                return res.status(403).send({ error: "No puedes agregar al carrito un producto creado por ti" });
+            };
+        };
+        const productAdded = await cartService.addProductToCart(cid, pid);
+        req.logger.info("Producto agregado al carrito con éxito");
+        return res.status(200).send({ status: "success", payload: productAdded });
     } catch (error) {
         res.status(500).send({ error: error.message });
     };
@@ -63,7 +74,8 @@ export const putCart = async (req, res) => {
         };
         cart.products = carrito;
         const updatedCart = await cartService.updateCart(cid, cart);
-        res.status(200).send({ status: "success", payload: updatedCart });
+        req.logger.info("Carrito actualizado con éxito");
+        return res.status(200).send({ status: "success", payload: updatedCart });
     } catch (error) {
         res.status(500).send({ error: error.message });
     };
@@ -86,7 +98,8 @@ export const putProductCart = async (req, res) => {
         };
         product.quantity = newQuantity;
         const updatedCart = await cartService.updateCart(cid, cart);
-        res.status(200).send({ status: "success", payload: updatedCart });
+        req.logger.info("Cantidad del producto actualizada con éxito");
+        return res.status(200).send({ status: "success", payload: updatedCart });
     } catch (error) {
         res.status(500).send({ error: error.message });
     };
@@ -101,7 +114,8 @@ export const deleteProductCart = async (req, res) => {
             req.logger.error(`El carrito con ID ${cid} no existe`);
             return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
         };
-        res.status(200).send({ status: "success", payload: cart });
+        req.logger.info("Producto eliminado del carrito con éxito");
+        return res.status(200).send({ status: "success", payload: cart });
     } catch (error) {
         res.status(500).send({ error: error.message });
     };
@@ -115,7 +129,8 @@ export const deleteProductsCart = async (req, res) => {
             req.logger.error(`El carrito con ID ${cid} no existe`);
             return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
         };
-        res.status(200).send({ status: "success", payload: cart });
+        req.logger.info("Productos eliminados del carrito con éxito");
+        return res.status(200).send({ status: "success", payload: cart });
     } catch (error) {
         res.status(500).send({ error: error.message });
     };
@@ -167,7 +182,8 @@ export const purchase = async (req, res) => {
             const saveTicket = await cartService.createTicket(newTicket);
             const ticket = await cartService.getTicketByID(saveTicket._id);
             const notPurchased = rejectedProducts.length > 0 ? true : false;
-            await sendEmail(userEmail, ticket);
+            await sendTicketEmail(userEmail, ticket);
+            req.logger.info("Compra realizada con éxito");
             return res.status(200).render("ticket", { ticket, notPurchased });
         } else {
             req.logger.error("La compra no pudo ser procesada por falta de stock");
@@ -176,4 +192,4 @@ export const purchase = async (req, res) => {
     } catch (error) {
         res.status(500).send({ error: error.message });
     };
-}
+};

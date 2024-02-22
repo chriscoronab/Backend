@@ -1,4 +1,4 @@
-export default class MessageService {
+export default class MessageRepository {
     constructor(dao) {
         this.dao = dao;
     };

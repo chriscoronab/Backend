@@ -10,16 +10,16 @@ router.post("/", postCart);
 
 router.get("/:cid", authentication, cartRender);
 
-router.post("/:cid/products/:pid", authorization("User"), postProductCart);
+router.post("/:cid/products/:pid", authorization("User", "Premium"), postProductCart);
 
-router.put("/:cid", authorization("User"), putCart);
+router.put("/:cid", authorization("User", "Premium"), putCart);
 
-router.put("/:cid/products/:pid", authorization("User"), putProductCart);
+router.put("/:cid/products/:pid", authorization("User", "Premium"), putProductCart);
 
-router.delete("/:cid/products/:pid", authorization("User"), deleteProductCart);
+router.delete("/:cid/products/:pid", authorization("User", "Premium"), deleteProductCart);
 
-router.delete("/:cid", authorization("User"), deleteProductsCart);
+router.delete("/:cid", authorization("User", "Premium"), deleteProductsCart);
 
-router.get("/:cid/purchase", authorization("User"), purchase);
+router.get("/:cid/purchase", authorization("User", "Premium"), purchase);
 
 export default router;

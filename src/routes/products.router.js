@@ -6,14 +6,14 @@ const router = Router();
 
 router.get("/", authentication, productsRender);
 
-router.get("/create", authorization("Admin"), createRender);
+router.get("/create", authorization("Admin", "Premium"), createRender);
 
 router.get("/:pid", authentication, productRender);
 
-router.post("/create", authorization("Admin"), postProduct);
+router.post("/create", authorization("Admin", "Premium"), postProduct);
 
-router.put("/:pid", authorization("Admin"), putProduct);
+router.put("/:pid", authorization("Admin", "Premium"), putProduct);
 
-router.delete("/:pid", authorization("Admin"), deleteProduct);
+router.delete("/:pid", authorization("Admin", "Premium"), deleteProduct);
 
 export default router;

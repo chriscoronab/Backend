@@ -11,8 +11,8 @@ import viewsRouter from "./routes/views.router.js";
 import sessionRouter from "./routes/session.router.js";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
-import loggerRouter from "./routes/logger.router.js";
-import { messageService } from "./services/index.js";
+import usersRouter from "./routes/users.router.js";
+import { messageService } from "./repositories/index.js";
 import __dirname from "./utils.js";
 
 const app = express();
@@ -41,7 +41,7 @@ app.use("/", viewsRouter);
 app.use("/session", sessionRouter);
 app.use("/products", productsRouter);
 app.use("/carts", cartsRouter);
-app.use("/logger", loggerRouter);
+app.use("/users", usersRouter);
 
 const httpServer = app.listen(config.port, () => console.log(`Listening on port ${config.port}`));
 httpServer.on("Error", error => console.log(`${error.message}`));

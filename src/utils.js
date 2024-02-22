@@ -31,11 +31,19 @@ export function authentication(req, res, next) {
     next();
 };
 
-export const authorization = role => {
+export const authorization = (...allowedRoles) => {
     return async (req, res, next) => {
         const user = req.user;
         if (!user) return res.status(401).redirect("/");
-        if (user.role != role) return res.status(403).send({ error: "No permisions" });
+        if (!allowedRoles.includes(user.role)) return res.status(403).send({ error: "No permisions" });
         return next();
     };
+};
+
+export const generateEmailToken = email => {
+    return jwt.sign({ email }, config.emailKey, { expiresIn: "1h" });
+};
+
+export const verifyEmailToken = token => {
+    return jwt.verify(token, config.emailKey);
 };

@@ -45,5 +45,5 @@ export default class ProductManager {
         } catch (error) {
             console.error(error);
         };
-    }
+    };
 };

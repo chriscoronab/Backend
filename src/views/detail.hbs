@@ -16,25 +16,9 @@
             const cid = "{{cart}}";
             const pid = "{{product._id}}";
             await fetch(`/carts/${cid}/products/${pid}`, { 
-                method: "POST",
-            })
-            .then(() => {
-                Toastify({
-                    text: "Producto agregado al carrito con éxito",
-                    duration: 4000,
-                    newWindow: true,
-                    close: true,
-                    gravity: "top",
-                    position: "right",
-                    stopOnFocus: true,
-                    style: {
-                        background: "green",
-                        borderRadius: "10px",
-                        fontWeight: "600",
-                    }
-                }).showToast();
-                document.location.href = `/carts/${cid}`;
-            })
+                method: "POST"
+            });
+            document.location.href = `/carts/${cid}`;
         } catch (error) {
             console.error(error);
         };
