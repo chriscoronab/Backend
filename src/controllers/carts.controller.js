@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { cartService, productService } from "../repositories/index.js";
+import { cartService, productService, ticketService } from "../repositories/index.js";
 import { sendTicketEmail } from "../config/nodemailer.js";
 
 export const getCarts = async (req, res) => {
@@ -15,7 +15,7 @@ export const postCart = async (req, res) => {
     try {
         const newCart = req.body;
         const cart = await cartService.createCart(newCart);
-        return res.status(200).send({ status: "success", payload: cart });
+        return res.status(201).send({ status: "success", payload: cart });
     } catch (error) {
         res.status(500).send({ error: error.message });
     };
@@ -32,6 +32,39 @@ export const cartRender = async (req, res) => {
         const userCart = req.user.cart;
         const productsInCart = cart.products.length > 0 ? true : false;
         return res.status(200).render("cart", { cart, userCart, productsInCart });
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    };
+};
+
+export const putCart = async (req, res) => {
+    try {
+        const { cid } = req.params;
+        const carrito = req.body;
+        const cart = await cartService.getCartByID(cid);
+        if (!cart) {
+            req.logger.error(`El carrito con ID ${cid} no existe`);
+            return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
+        };
+        cart.products = carrito;
+        const updatedCart = await cartService.updateCart(cid, cart);
+        req.logger.info("Carrito actualizado con éxito");
+        return res.status(200).send({ status: "success", payload: updatedCart });
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    };
+};
+
+export const deleteProductsCart = async (req, res) => {
+    try {
+        const { cid } = req.params;
+        const cart = await cartService.deleteAllCartProducts(cid);
+        if (!cart) {
+            req.logger.error(`El carrito con ID ${cid} no existe`);
+            return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
+        };
+        req.logger.info("Productos eliminados del carrito con éxito");
+        return res.status(200).send({ status: "success", payload: cart });
     } catch (error) {
         res.status(500).send({ error: error.message });
     };
@@ -63,32 +96,14 @@ export const postProductCart = async (req, res) => {
     };
 };
 
-export const putCart = async (req, res) => {
-    try {
-        const { cid } = req.params;
-        const carrito = req.body;
-        const cart = await cartService.getCartByID(cid);
-        if (!cart) {
-            req.logger.error(`El carrito con ID ${cid} no existe`);
-            return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
-        };
-        cart.products = carrito;
-        const updatedCart = await cartService.updateCart(cid, cart);
-        req.logger.info("Carrito actualizado con éxito");
-        return res.status(200).send({ status: "success", payload: updatedCart });
-    } catch (error) {
-        res.status(500).send({ error: error.message });
-    };
-};
-
 export const putProductCart = async (req, res) => {
     try {
         const { cid } = req.params;
         const { pid } = req.params;
         const newQuantity = req.body.quantity;
-        if (newQuantity < 0) {
-            req.logger.warning("La cantidad debe ser mayor a 0");
-            return res.status(400).send({ error: "La cantidad debe ser mayor a 0" });
+        if (isNaN(newQuantity) || newQuantity < 0) {
+            req.logger.warning("La cantidad debe ser un número mayor a 0");
+            return res.status(400).send({ error: "La cantidad debe ser un número mayor a 0" });
         };
         const cart = await cartService.getCartByID(cid);
         const product = cart.products.find(item => item.product._id == pid);
@@ -115,21 +130,6 @@ export const deleteProductCart = async (req, res) => {
             return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
         };
         req.logger.info("Producto eliminado del carrito con éxito");
-        return res.status(200).send({ status: "success", payload: cart });
-    } catch (error) {
-        res.status(500).send({ error: error.message });
-    };
-};
-
-export const deleteProductsCart = async (req, res) => {
-    try {
-        const { cid } = req.params;
-        const cart = await cartService.deleteAllCartProducts(cid);
-        if (!cart) {
-            req.logger.error(`El carrito con ID ${cid} no existe`);
-            return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
-        };
-        req.logger.info("Productos eliminados del carrito con éxito");
         return res.status(200).send({ status: "success", payload: cart });
     } catch (error) {
         res.status(500).send({ error: error.message });
@@ -179,15 +179,15 @@ export const purchase = async (req, res) => {
                 products: approvedProducts.map(prod => ({ product: prod.product._id, quantity: prod.quantity })),
                 rejected_products: rejectedProducts.map(p => ({ product: p.product._id, quantity: p.quantity }))
             };
-            const saveTicket = await cartService.createTicket(newTicket);
-            const ticket = await cartService.getTicketByID(saveTicket._id);
+            const saveTicket = await ticketService.createTicket(newTicket);
+            const ticket = await ticketService.getTicketByID(saveTicket._id);
             const notPurchased = rejectedProducts.length > 0 ? true : false;
             await sendTicketEmail(userEmail, ticket);
             req.logger.info("Compra realizada con éxito");
             return res.status(200).render("ticket", { ticket, notPurchased });
         } else {
             req.logger.error("La compra no pudo ser procesada por falta de stock");
-            return res.status(403).send({ error: "La compra no pudo ser procesada por falta de stock" });
+            return res.status(400).send({ error: "La compra no pudo ser procesada por falta de stock" });
         };
     } catch (error) {
         res.status(500).send({ error: error.message });

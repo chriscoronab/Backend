@@ -35,21 +35,6 @@ export const createRender = (req, res) => {
     };
 };
 
-export const productRender = async (req, res) => {
-    try {
-        const { pid } = req.params;
-        const product = await productService.getProductByID(pid);
-        if (!product) {
-            req.logger.error(`El producto con ID ${pid} no existe`);
-            return res.status(404).send({ error: `El producto con ID ${pid} no existe` });
-        };
-        const cart = req.user.cart;
-        return res.status(200).render("detail", { product, cart });
-    } catch (error) {
-        res.status(500).send({ error: error.message });
-    };
-};
-
 export const postProduct = async (req, res) => {
     try {
         const newProduct = req.body;
@@ -60,7 +45,22 @@ export const postProduct = async (req, res) => {
             await productService.updateProduct({ _id: product._id }, product);
         };
         req.logger.info("Producto creado con éxito");
-        return res.status(200).redirect("/products");
+        return res.status(201).redirect("/products");
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    };
+};
+
+export const productRender = async (req, res) => {
+    try {
+        const { pid } = req.params;
+        const product = await productService.getProductByID(pid);
+        if (!product) {
+            req.logger.error(`El producto con ID ${pid} no existe`);
+            return res.status(404).send({ error: `El producto con ID ${pid} no existe` });
+        };
+        const cart = req.user.cart;
+        return res.status(200).render("detail", { product, cart });
     } catch (error) {
         res.status(500).send({ error: error.message });
     };

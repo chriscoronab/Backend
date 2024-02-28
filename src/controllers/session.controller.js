@@ -12,7 +12,7 @@ export const login = async (req, res) => {
 
 export const register = async (req, res) => {
     try {
-        return res.status(200).redirect("/");
+        return res.status(201).redirect("/");
     } catch (error) {
         res.status(500).send({ error: error.message });
     };

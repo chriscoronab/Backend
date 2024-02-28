@@ -1,0 +1,204 @@
+paths:
+  /products:
+    get:
+      sumary: Obtiene todos los productos
+      tags:
+        - Products
+      responses:
+        "200":
+          description: Los productos se obtuvieron con éxito
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#components/schemas/products"
+        "500":
+          description: Error interno del servidor
+    post:
+      sumary: Crea un producto
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/addProduct"
+      responses:
+        "201":
+          description: El producto fue creado con éxito
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/products"
+        "500":
+          description: Error interno del servidor
+  /products/{pid}:
+    get:
+      sumary: Obtiene un producto por ID
+      tags:
+        - Products
+      parameters:
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto que se desea obtener
+        schema:
+          $type: string
+      responses:
+        "200":
+          description: El producto se obtuvo con éxito
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/products"
+        "404":
+          description: El producto no existe
+        "500":
+          description: Error interno del servidor
+    put:
+      sumary: Actualiza un producto por ID
+      tags:
+        - Products
+      parameters:
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto que se desea actualizar
+        schema:
+          $type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/updateProduct"
+      responses:
+        "200":
+          description: El producto fue actualizado con éxito
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/products"
+        "403":
+          description: Solo el owner del producto está autorizado para actualizar este producto
+        "404":
+          description: El producto no existe
+        "500":
+          description: Error interno del servidor
+    delete:
+      sumary: Elimina un producto por ID
+      tags:
+        - Products
+      parameters:
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto que se desea eliminar
+        schema:
+          $type: string
+      responses:
+        "200":
+          description: El producto fue eliminado con éxito
+        "403":
+          description: Solo el owner del producto está autorizado para eliminar este producto
+        "404":
+          description: El producto no existe
+        "500":
+          description: Error interno del servidor
+components:
+  schemas:
+    products:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: ID autogenerado por Mongo
+        title:
+          type: string
+          description: Nombre del producto
+        description:
+          type: string
+          description: Descripción del producto
+        category:
+          type: string
+          description: Categoría del producto
+        price:
+          type: number
+          description: Precio del producto
+        thumbnail:
+          type: string
+          description: Imagen del producto
+        stock:
+          type: number
+          description: Stock del producto
+        owner:
+          type: string
+          description: Creador del producto
+      example:
+        _id: ObjectId('65566686d281ea46c3cac23e')
+        title: Chicago Bulls
+        description: Camiseta Chicago Bulls Nike Icon Edition Swingman - Rojo - DeMar DeRozan - Unisex
+        category: East Side
+        price: 45000
+        thumbnail: https://fanatics.frgimages.com/chicago-bulls/unisex-nike-demar-derozan-red-chicago-bulls-swingman-jersey-icon-edition_pi4650000_altimages_ff_4650397-9133ba403c720561652aalt1_full.jpg?_hv=2&w=900
+        stock: 40
+        owner: chriscoronab@gmail.com
+  requestBodies:
+    addProduct:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Nombre del producto
+        description:
+          type: string
+          description: Descripción del producto
+        category:
+          type: string
+          description: Categoría del producto
+        price:
+          type: number
+          description: Precio del producto
+        thumbnail:
+          type: string
+          description: Imagen del producto
+        stock:
+          type: number
+          description: Stock del producto
+      example:
+        title: Los Angeles Lakers
+        description: Camiseta Los Angeles Lakers Nike Icon Edition Swingman - Amarillo - Lebron James - Unisex
+        category: West Side
+        price: 44000
+        thumbnail: https://fanatics.frgimages.com/los-angeles-lakers/unisex-nike-lebron-james-gold-los-angeles-lakers-swingman-jersey-icon-edition_pi4650000_altimages_ff_4650415-05a457ee92c4a00567baalt1_full.jpg?_hv=2&w=9002
+        stock: 39
+    updateProduct:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Nombre del producto
+        description:
+          type: string
+          description: Descripción del producto
+        category:
+          type: string
+          description: Categoría del producto
+        price:
+          type: number
+          description: Precio del producto
+        thumbnail:
+          type: string
+          description: Imagen del producto
+        stock:
+          type: number
+          description: Stock del producto
+      example:
+        title: Boston Celtics
+        description: Camiseta Boston Celtics Nike Icon Edition Swingman - Verde - Jayson Tatum - Unisex
+        category: East Side
+        price: 39000
+        thumbnail: https://fanatics.frgimages.com/boston-celtics/unisex-nike-jayson-tatum-kelly-green-boston-celtics-swingman-jersey-icon-edition_pi4650000_altimages_ff_4650391-20e3b038ad7098229d53alt1_full.jpg?_hv=2&w=900
+        stock: 19
