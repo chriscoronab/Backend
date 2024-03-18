@@ -7,3 +7,5 @@
 {"level":"error","message":"La contraseña debe ser diferente a la anterior"}
 {"level":"error","message":"El usuario con ID 3 no existe"}
 {"level":"error","message":"No es posible cambiar el rol del Admin"}
+{"level":"error","message":"Invalid GitHub"}
+{"level":"error","message":"El usuario con ID 65f34fded395488f3aea2354 no existe"}

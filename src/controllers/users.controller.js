@@ -1,4 +1,4 @@
-import { userService } from "../repositories/index.js";
+import { userService } from "../services/index.js";
 
 export const userToggle = async (req, res) => {
     try {

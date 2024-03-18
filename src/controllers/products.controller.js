@@ -1,4 +1,4 @@
-import { productService } from "../repositories/index.js";
+import { productService } from "../services/index.js";
 
 export const productsRender = async (req, res) => {
     try {

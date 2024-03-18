@@ -25,7 +25,9 @@ const userSchema = new mongoose.Schema({
         required: true,
         enum: ["User", "Premium", "Admin"],
         default: "User"
-    }
+    },
+    avatar: String,
+    last_connection: Date
 });
 
 const userModel = mongoose.model(userCollection, userSchema);

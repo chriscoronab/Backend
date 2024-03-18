@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { cartService, productService, ticketService } from "../repositories/index.js";
+import { cartService, productService, ticketService } from "../services/index.js";
 import { sendTicketEmail } from "../config/nodemailer.js";
 
 export const getCarts = async (req, res) => {

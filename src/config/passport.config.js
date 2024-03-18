@@ -3,7 +3,7 @@ import local from "passport-local";
 import passportJWT from "passport-jwt";
 import GitHubStrategy from "passport-github2";
 import config from "./config.js";
-import { userService, cartService } from "../repositories/index.js";
+import { userService, cartService } from "../services/index.js";
 import { createHash, isValidPassword, generateToken } from "../utils.js";
 
 const LocalStrategy = local.Strategy;
@@ -15,7 +15,7 @@ const initializePassport = () => {
         usernameField: "email"
     }, async (req, username, password, done) => {
         try {
-            const { first_name, last_name, email, age } = req.body;
+            const { first_name, last_name, email, age, avatar } = req.body;
             const user = await userService.getUserByUsername({ email: username });
             if (user) {
                 console.error(`El usuario ${user.email} ya existe`);
@@ -28,7 +28,10 @@ const initializePassport = () => {
                 email,
                 age,
                 password: createHash(password),
-                cart: cartNewUser._id
+                cart: cartNewUser._id,
+                role: "User",
+                avatar,
+                last_connection: ""
             };
             if (newUser.email === "adminCoder@coder.com") {
                 newUser.role = "Admin"
@@ -52,6 +55,8 @@ const initializePassport = () => {
                     console.error("Contraseña incorrecta");
                     return done(null, false);
                 };
+                user.last_connection = new Date();
+                await userService.updateUser(user._id, user);
                 const token = generateToken(user);
                 user.token = token;
                 return done(null, user);
@@ -77,7 +82,9 @@ const initializePassport = () => {
                     age: "",
                     password: "",
                     cart: cartNewUser._id,
-                    role: "User"
+                    role: "User",
+                    avatar: profile._json.avatar_url,
+                    last_connection: new Date()
                 };
                 if (user.email === "adminCoder@coder.com") {
                     user.role = "Admin"

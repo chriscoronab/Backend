@@ -1,4 +1,4 @@
-import { messageService, userService } from "../repositories/index.js";
+import { messageService, userService } from "../services/index.js";
 import { createHash, isValidPassword, generateEmailToken, verifyEmailToken } from "../utils.js";
 import { sendPasswordRecoveryEmail } from "../config/nodemailer.js";
 
