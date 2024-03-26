@@ -32,17 +32,15 @@ export default class CartManager {
             console.error(error);
         };
     };
-    deleteCartProduct = async (cid, pid) => {
+    deleteAllCartProducts = async cid => {
         try {
             const cart = await this.getCartByID(cid);
-            const product = cart.products.find(item => item.product._id == pid);
-            if (!product) return null;
-            cart.products.splice(product, 1);
+            cart.products.splice(0, cart.products.length);
             return await this.updateCart(cid, cart);
         } catch {
             console.error(error);
         };
-    }
+    };
     addProductToCart = async (cid, pid) => {
         try {
             const cart = await this.getCartByID(cid);
@@ -57,10 +55,12 @@ export default class CartManager {
             console.error(error);
         };
     };
-    deleteAllCartProducts = async cid => {
+    deleteCartProduct = async (cid, pid) => {
         try {
             const cart = await this.getCartByID(cid);
-            cart.products.splice(0, cart.products.length);
+            const product = cart.products.find(item => item.product._id == pid);
+            if (!product) return null;
+            cart.products.splice(product, 1);
             return await this.updateCart(cid, cart);
         } catch {
             console.error(error);

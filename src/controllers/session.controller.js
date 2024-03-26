@@ -27,7 +27,7 @@ export const register = async (req, res) => {
 
 export const github = async (req, res) => { };
 
-export const githubCallback = async (req, res) => {
+export const githubCallback = (req, res) => {
     try {
         req.session.user = req.user;
         const user = req.user;

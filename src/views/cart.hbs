@@ -4,18 +4,21 @@
     <div class="products">
         {{#each cart.products}}
         <div class="card" style="width: 18rem;">
-            <img src="/images/{{this.product.thumbnail}}" class="card-img-top" alt="{{this.product.title}}">
+            <img src="/images/products/{{this.product.thumbnail}}" class="card-img-top" alt="{{this.product.title}}">
             <div class="card-body">
                 <h5 class="card-title">{{this.product.title}}</h5>
                 <p class="card-text">{{this.product.description}}</p>
                 <p class="card-text">Precio: {{this.product.price}}</p>
                 <p class="card-text">Cantidad: {{this.quantity}}</p>
+                <button id="deleteProduct" product-id="{{this.product._id}}" class="btn btn-danger">Quitar del carrito</button>
             </div>
         </div>
         {{/each}}
     </div>
-    <div class="button">
-        <button id="purchase" class="btn btn-success">Comprar</button>
+    <div class="buttons">
+        <button id="emptyCart" class="btn btn-danger">Vaciar carrito</button>
+        <a href="/products"><button class="btn btn-primary">Seguir comprando</button></a>
+        <a href="/carts/{{userCart}}/purchase"><button class="btn btn-success">Finalizar compra</button></a>
     </div>
     {{else}}
     <h3>No hay productos en el carrito</h3>
@@ -25,12 +28,20 @@
     {{/if}}
 </div>
 <script>
-    document.querySelector("#purchase").onclick = async (e) => {
-        try {
-            const cid = "{{userCart}}";
-            document.location.href = `/carts/${cid}/purchase`;
-        } catch (error) {
-            console.error(error);
-        };
+    const cid = "{{userCart}}";
+    document.querySelector("#deleteProduct").onclick = async e => {
+        const pid = e.target.getAttribute("product-id");
+        await fetch(`/carts/${cid}/products/${pid}`, { 
+            method: "DELETE"
+        })
+            .then((res) => document.location.href = `/carts/${cid}`)
+            .catch((error) => console.error("Error al intentar quitar el producto del carrito"));
+    };
+    document.querySelector("#emptyCart").onclick = async e => {
+        await fetch(`/carts/${cid}`, { 
+            method: "DELETE"
+        })
+            .then((res) => document.location.href = `/carts/${cid}`)
+            .catch((error) => console.error("Error al intentar vaciar el carrito"));
     };
 </script>

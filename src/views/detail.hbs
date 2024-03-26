@@ -1,5 +1,5 @@
 <div class="detail">
-    <img src="/images/{{product.thumbnail}}" alt="{{product.title}}">
+    <img src="/images/products/{{product.thumbnail}}" alt="{{product.title}}">
     <div class="card-body">
         <h2>{{product.title}}</h2>
         <p class="card-text">{{product.description}}</p>
@@ -11,16 +11,13 @@
     </div>
 </div>
 <script>
-    document.querySelector("#addToCart").onclick = async (e) => {
-        try {
-            const cid = "{{cart}}";
-            const pid = "{{product._id}}";
-            await fetch(`/carts/${cid}/products/${pid}`, { 
-                method: "POST"
-            });
-            document.location.href = `/carts/${cid}`;
-        } catch (error) {
-            console.error(error);
-        };
+    document.querySelector("#addToCart").onclick = async e => {
+        const cid = "{{cart}}";
+        const pid = "{{product._id}}";
+        await fetch(`/carts/${cid}/products/${pid}`, { 
+            method: "POST"
+        })
+            .then((res) => document.location.href = `/carts/${cid}`)
+            .catch((error) => console.error("Error al intentar agregar el producto al carrito"));
     };
 </script>

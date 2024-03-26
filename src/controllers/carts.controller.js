@@ -160,7 +160,7 @@ export const purchase = async (req, res) => {
         const rejectedProducts = [];
         for (const item of cart.products) {
             const product = await productService.getProductByID(item.product._id);
-            if (!product || product.stock === 0 || product.stock < item.quantity) {
+            if (!product || product.stock === 0 || product.stock < item.q0uantity) {
                 rejectedProducts.push(item);
                 continue;
             };
