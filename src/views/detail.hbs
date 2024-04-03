@@ -5,19 +5,38 @@
         <p class="card-text">{{product.description}}</p>
         <p class="card-text"><b>Categoría: </b>{{product.category}}</p>
         <p class="card-text"><b>Precio: </b>{{product.price}}</p>
-        <p class="card-text"><b>Código: </b>{{product._id}}</p>
         <p class="card-text"><b>Stock: </b>{{product.stock}}</p>
-        <button id="addToCart" class="btn btn-success">Agregar al carrito</button>
+        {{#if admin}}
+        <button class="btn btn-danger deleteProduct">Eliminar producto</button>
+        {{else if premium}}
+        <button class="btn btn-success addToCart">Agregar al carrito</button>
+        <button class="btn btn-danger deleteProduct">Eliminar producto</button>
+        {{else}}
+        <button class="btn btn-success addToCart">Agregar al carrito</button>
+        {{/if}}
     </div>
 </div>
 <script>
-    document.querySelector("#addToCart").onclick = async e => {
-        const cid = "{{cart}}";
-        const pid = "{{product._id}}";
-        await fetch(`/carts/${cid}/products/${pid}`, { 
-            method: "POST"
-        })
-            .then((res) => document.location.href = `/carts/${cid}`)
-            .catch((error) => console.error("Error al intentar agregar el producto al carrito"));
-    };
+    const cid = "{{cart}}";
+    const pid = "{{product._id}}";
+    const addToCart = document.querySelectorAll(".addToCart");
+    const deleteProduct = document.querySelectorAll(".deleteProduct");
+    addToCart.forEach(button => {
+        button.addEventListener("click", async () => {
+            await fetch(`/carts/${cid}/products/${pid}`, { 
+                method: "POST"
+            })
+                .then(res => document.location.href = `/carts/${cid}`)
+                .catch(error => console.error("Error al intentar agregar el producto al carrito"));
+        });
+    });
+    deleteProduct.forEach(button => {
+        button.addEventListener("click", async () => {
+            await fetch(`/products/${pid}`, { 
+                method: "DELETE"
+            })
+                .then(res => document.location.href = "/products")
+                .catch(error => console.error("Error al intentar eliminar el producto"));
+        });
+    });
 </script>

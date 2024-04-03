@@ -1,5 +1,5 @@
-import UserDTO from "../dto/users.dto.js";
 import { userService } from "../services/index.js";
+import UserDTO from "../dto/users.dto.js";
 
 export const login = async (req, res) => {
     try {
@@ -46,14 +46,15 @@ export const currentRender = (req, res) => {
     try {
         const userData = req.session.user;
         const user = new UserDTO(userData);
-        return res.status(200).render("current", { user });
+        const admin = user.role === "Admin" ? true : false;
+        return res.status(200).render("current", { user, admin });
     } catch (error) {
         res.status(500).send({ error: error.message });
     };
 };
 
 export const logout = (req, res) => {
-    req.session.destroy(async (err) => {
+    req.session.destroy(async err => {
         if (err) return res.status(500).send({ error: err.message });
         try {
             const user = req.user;

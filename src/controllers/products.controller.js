@@ -1,4 +1,5 @@
 import { productService } from "../services/index.js";
+import { sendDeletedProductMail } from "../config/nodemailer.js";
 
 export const productsRender = async (req, res) => {
     try {
@@ -37,13 +38,12 @@ export const createRender = (req, res) => {
 
 export const postProduct = async (req, res) => {
     try {
-        const newProduct = req.body;
-        const product = await productService.addProduct(newProduct);
+        const product = req.body;
         const user = req.user;
         if (user.role === "Premium") {
             product.owner = user.email;
-            await productService.updateProduct({ _id: product._id }, product);
         };
+        await productService.addProduct(product);
         req.logger.info("Producto creado con éxito");
         return res.status(201).redirect("/products");
     } catch (error) {
@@ -59,8 +59,11 @@ export const productRender = async (req, res) => {
             req.logger.error(`El producto con ID ${pid} no existe`);
             return res.status(404).send({ error: `El producto con ID ${pid} no existe` });
         };
-        const cart = req.user.cart;
-        return res.status(200).render("detail", { product, cart });
+        const user = req.user;
+        const cart = user.cart;
+        const admin = user.role === "Admin" ? true : false;
+        const premium = user.role === "Premium" ? true : false;
+        return res.status(200).render("detail", { product, cart, admin, premium });
     } catch (error) {
         res.status(500).send({ error: error.message });
     };
@@ -108,6 +111,9 @@ export const deleteProduct = async (req, res) => {
             };
         };
         const deletedProduct = await productService.deleteProduct(product);
+        if (product.owner !== "Admin") {
+            await sendDeletedProductMail(product.owner);
+        };
         req.logger.info("Producto eliminado con éxito");
         return res.status(200).send({ status: "success", payload: deletedProduct });
     } catch (error) {

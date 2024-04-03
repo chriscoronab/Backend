@@ -8,7 +8,7 @@ router.get("/", publicAccess, loginRender);
 
 router.get("/register", publicAccess, registerRender);
 
-router.get("/chat", authorization("User"), chatRender);
+router.get("/chat", authorization("User", "Premium"), chatRender);
 
 router.get("/forgot-password", publicAccess, forgotPasswordRender);
 

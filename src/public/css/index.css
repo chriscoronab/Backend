@@ -53,17 +53,17 @@ footer p {
 .forgotPassword form button, .resetPassword form button {
     margin: 0 0 0 8em;
 }
-.cart h3, .error h3, .ticket h3 {
+.cart h3, .error h3, .ticket h3, .usersRender h2 {
     margin: 1em 0 1em 3em;
     text-align: center;
 }
 .form {
     margin-left: 5em;
 }
-.form button {
+.form button, #deleteInactiveUsers {
     margin: 2em 0 0 30em;
 }
-.products {
+.products, .users {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -121,6 +121,12 @@ footer p {
 }
 .user h2 {
     width: max-content;
+}
+.user img {
+    width: 20%;
+    margin: 1em 0;
+    border-radius: 50%;
+    border: 2px solid #fff;
 }
 .buttons {
     margin: 1em 0 0 20em;

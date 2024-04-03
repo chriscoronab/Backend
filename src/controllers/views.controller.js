@@ -1,6 +1,6 @@
 import { messageService, userService } from "../services/index.js";
 import { createHash, isValidPassword, generateEmailToken, verifyEmailToken } from "../utils.js";
-import { sendPasswordRecoveryEmail } from "../config/nodemailer.js";
+import { sendPasswordRecoveryMail } from "../config/nodemailer.js";
 
 export const loginRender = (req, res) => {
     try {
@@ -44,7 +44,7 @@ export const forgotPassword = async (req, res) => {
             return res.status(404).send({ error: `El usuario ${email} no está registrado` });
         };
         const token = generateEmailToken(email);
-        await sendPasswordRecoveryEmail(email, token);
+        await sendPasswordRecoveryMail(email, token);
         req.logger.info(`Se envió un correo a ${email} para restablecer la contraseña`);
         return res.status(200).redirect("/");
     } catch (error) {

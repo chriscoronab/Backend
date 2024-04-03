@@ -1,0 +1,50 @@
+<div class="usersRender">
+    <h2>Usuarios</h2>
+    <div class="users">
+        {{#each usersDTO}}
+        <div class="card" style="width: 18rem;">
+            <img src="{{this.avatar}}" class="card-img-top" alt="{{this.first_name}}{{this.last_name}}-avatar">
+            <div class="card-body">
+                <h5 class="card-title">{{this.first_name}} {{this.last_name}}</h5>
+                <p class="card-text"><b>Email:</b> {{this.email}}</p>
+                <p class="card-text"><b>Rol:</b> {{this.role}}</p>
+                <button user-id="{{this._id}}" class="btn btn-primary userToggle">Modificar rol</button>
+                <button user-id="{{this._id}}" class="btn btn-danger deleteUser">Eliminar</button>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    <button id="deleteInactiveUsers" class="btn btn-danger">Eliminar usuarios inactivos</button>
+</div>
+<script>
+    const userToggle = document.querySelectorAll(".userToggle");
+    const deleteUser = document.querySelectorAll(".deleteUser");
+    const deleteInactiveUsers = document.querySelector("#deleteInactiveUsers");
+    userToggle.forEach(button => {
+        button.addEventListener("click", async event => {
+            const uid = event.target.getAttribute("user-id");
+            await fetch(`/users/premium/${uid}`, { 
+                method: "PUT"
+            })
+                .then(res => document.location.href = "/users")
+                .catch(error => console.error("Error al intentar modificar el rol del usuario"));
+        });
+    });
+    deleteUser.forEach(button => {
+        button.addEventListener("click", async event => {
+            const uid = event.target.getAttribute("user-id");
+            await fetch(`/users/${uid}`, { 
+                method: "DELETE"
+            })
+                .then(res => document.location.href = "/users")
+                .catch(error => console.error("Error al intentar eliminar el usuario"));
+        });
+    });
+    deleteInactiveUsers.onclick = async () => {
+        await fetch("/users", { 
+            method: "DELETE"
+        })
+            .then(res => document.location.href = "/users")
+            .catch(error => console.error("Error al intentar eliminar los usuarios inactivos"));
+    };
+</script>

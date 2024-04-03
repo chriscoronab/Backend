@@ -4,6 +4,13 @@ export default class UserManager {
     constructor() {
         this.model = userModel;
     };
+    getUsers = async () => {
+        try {
+            return await this.model.find();
+        } catch (error) {
+            console.error(error);
+        };
+    };
     createUser = async user => {
         try {
             return await this.model.create(user);
@@ -42,6 +49,13 @@ export default class UserManager {
     updatePassword = async (user, newPassword) => {
         try {
             return await this.model.updateOne({ _id: user._id }, { password: newPassword });
+        } catch (error) {
+            console.error(error);
+        };
+    };
+    deleteUser = async uid => {
+        try {
+            return await this.model.deleteOne({ _id: uid });
         } catch (error) {
             console.error(error);
         };

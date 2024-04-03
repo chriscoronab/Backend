@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { cartService, productService, ticketService } from "../services/index.js";
-import { sendTicketEmail } from "../config/nodemailer.js";
+import { sendTicketMail } from "../config/nodemailer.js";
 
 export const getCarts = async (req, res) => {
     try {
@@ -182,7 +182,7 @@ export const purchase = async (req, res) => {
             const saveTicket = await ticketService.createTicket(newTicket);
             const ticket = await ticketService.getTicketByID(saveTicket._id);
             const notPurchased = rejectedProducts.length > 0 ? true : false;
-            await sendTicketEmail(userEmail, ticket);
+            await sendTicketMail(userEmail, ticket);
             req.logger.info("Compra realizada con éxito");
             return res.status(200).render("ticket", { ticket, notPurchased });
         } else {

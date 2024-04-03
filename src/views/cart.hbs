@@ -10,7 +10,7 @@
                 <p class="card-text">{{this.product.description}}</p>
                 <p class="card-text">Precio: {{this.product.price}}</p>
                 <p class="card-text">Cantidad: {{this.quantity}}</p>
-                <button id="deleteProduct" product-id="{{this.product._id}}" class="btn btn-danger">Quitar del carrito</button>
+                <button product-id="{{this.product._id}}" class="btn btn-danger deleteProductFromCart">Quitar del carrito</button>
             </div>
         </div>
         {{/each}}
@@ -29,19 +29,23 @@
 </div>
 <script>
     const cid = "{{userCart}}";
-    document.querySelector("#deleteProduct").onclick = async e => {
-        const pid = e.target.getAttribute("product-id");
-        await fetch(`/carts/${cid}/products/${pid}`, { 
-            method: "DELETE"
-        })
-            .then((res) => document.location.href = `/carts/${cid}`)
-            .catch((error) => console.error("Error al intentar quitar el producto del carrito"));
-    };
-    document.querySelector("#emptyCart").onclick = async e => {
+    const deleteProductFromCart = document.querySelectorAll(".deleteProductFromCart");
+    const emptyCart = document.querySelector("#emptyCart");
+    deleteProductFromCart.forEach(button => {
+        button.addEventListener("click", async event => {
+            const pid = event.target.getAttribute("product-id");
+            await fetch(`/carts/${cid}/products/${pid}`, { 
+                method: "DELETE"
+            })
+                .then(res => document.location.href = `/carts/${cid}`)
+                .catch(error => console.error("Error al intentar quitar el producto del carrito"));
+        });
+    });
+    emptyCart.onclick = async () => {
         await fetch(`/carts/${cid}`, { 
             method: "DELETE"
         })
-            .then((res) => document.location.href = `/carts/${cid}`)
-            .catch((error) => console.error("Error al intentar vaciar el carrito"));
+            .then(res => document.location.href = `/carts/${cid}`)
+            .catch(error => console.error("Error al intentar vaciar el carrito"));
     };
 </script>
