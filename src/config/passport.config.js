@@ -34,7 +34,7 @@ const initializePassport = () => {
                 last_connection: ""
             };
             if (newUser.email === "adminCoder@coder.com") {
-                newUser.role = "Admin"
+                newUser.role = "Admin";
             };
             const result = await userService.createUser(newUser);
             return done(null, result);
@@ -68,7 +68,7 @@ const initializePassport = () => {
     passport.use("github", new GitHubStrategy({
         clientID: config.clientID,
         clientSecret: config.clientSecret,
-        callbackURL: "http://127.0.0.1:8080/session/githubcallback"
+        callbackURL: `${config.serverURL}/session/githubcallback`
     }, async (accessToken, refreshToken, profile, done) => {
         try {
             const email = profile._json.email;
@@ -87,7 +87,7 @@ const initializePassport = () => {
                     last_connection: new Date()
                 };
                 if (user.email === "adminCoder@coder.com") {
-                    user.role = "Admin"
+                    user.role = "Admin";
                 };
                 const result = await userService.createUser(user);
                 user._id = result._id;
@@ -105,14 +105,14 @@ const initializePassport = () => {
     }, (jwt_payload, done) => {
         try {
             return done(null, jwt_payload);
-        } catch {
+        } catch (error) {
             return done({ error: error.message });
         };
     }));
     passport.serializeUser((user, done) => {
         done(null, user._id);
     });
-    passport.deserializeUser(async(id, done) => {
+    passport.deserializeUser(async (id, done) => {
         const user = await userService.getUserByID(id);
         done(null, user);
     });

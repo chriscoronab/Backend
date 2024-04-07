@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { getCarts, postCart, cartRender, putCart, deleteProductsCart, postProductCart, putProductCart, deleteProductCart, purchase } from "../controllers/carts.controller.js";
-import { authentication, authorization } from "../utils.js";
+import { authorization } from "../utils.js";
 
 const router = Router();
 
@@ -8,7 +8,7 @@ router.get("/", authorization("Admin"), getCarts);
 
 router.post("/", postCart);
 
-router.get("/:cid", authentication, cartRender);
+router.get("/:cid", authorization("User", "Premium"), cartRender);
 
 router.put("/:cid", authorization("User", "Premium"), putCart);
 

@@ -9,3 +9,4 @@
 {"level":"error","message":"Invalid GitHub"}
 {"level":"error","message":"El usuario con ID 65f34fded395488f3aea2354 no existe"}
 {"level":"error","message":"No es posible eliminar la cuenta del Admin"}
+{"level":"error","message":"La compra no pudo ser procesada por falta de stock"}

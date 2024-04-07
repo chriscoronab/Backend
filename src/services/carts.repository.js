@@ -9,4 +9,5 @@ export default class CartRepository {
     deleteAllCartProducts = async cid => { return this.dao.deleteAllCartProducts(cid) };
     addProductToCart = async (cid, pid) => { return this.dao.addProductToCart(cid, pid) };
     deleteCartProduct = async (cid, pid) => { return this.dao.deleteCartProduct(cid, pid) };
+    calculateTotalAmount = async cart => { return this.dao.calculateTotalAmount(cart) };
 };

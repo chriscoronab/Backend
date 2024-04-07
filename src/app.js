@@ -13,6 +13,7 @@ import sessionRouter from "./routes/session.router.js";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import usersRouter from "./routes/users.router.js";
+import paymentRouter from "./routes/payment.router.js";
 import { messageService } from "./services/index.js";
 import logger from "./utils/logger.js";
 import __dirname from "./utils.js";
@@ -57,6 +58,7 @@ app.use("/session", sessionRouter);
 app.use("/products", productsRouter);
 app.use("/carts", cartsRouter);
 app.use("/users", usersRouter);
+app.use("/payment", paymentRouter);
 app.use("/apidocs", SwaggerUiExpress.serve, SwaggerUiExpress.setup(specs));
 
 const httpServer = app.listen(config.port, () => console.log(`Listening on port ${config.port}`));

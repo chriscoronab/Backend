@@ -1,4 +1,5 @@
 import cartModel from "./models/carts.model.js";
+import productModel from "./models/products.model.js";
 
 export default class CartManager {
     constructor() {
@@ -37,7 +38,7 @@ export default class CartManager {
             const cart = await this.getCartByID(cid);
             cart.products.splice(0, cart.products.length);
             return await this.updateCart(cid, cart);
-        } catch {
+        } catch (error) {
             console.error(error);
         };
     };
@@ -62,7 +63,20 @@ export default class CartManager {
             if (!product) return null;
             cart.products.splice(product, 1);
             return await this.updateCart(cid, cart);
-        } catch {
+        } catch (error) {
+            console.error(error);
+        };
+    };
+    calculateTotalAmount = async cart => {
+        try {
+            let total = 0;
+            for (const item of cart) {
+                const product = await productModel.findOne({ _id: item.product }).lean().exec();
+                product.price *= item.quantity;
+                total += product.price;
+            };
+            return total;
+        } catch (error) {
             console.error(error);
         };
     };

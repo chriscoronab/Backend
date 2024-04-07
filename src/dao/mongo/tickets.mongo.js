@@ -7,14 +7,14 @@ export default class TicketManager {
     createTicket = async ticket => {
         try {
             return await this.model.create(ticket);
-        } catch {
+        } catch (error) {
             console.error(error);
         };
     };
     getTicketByID = async id => {
         try {
             return await this.model.findById(id).lean().exec();
-        } catch {
+        } catch (error) {
             console.error(error);
         };
     };

@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const userDisplay = document.getElementById("user");
-    const chatbox = document.getElementById("chatbox");
-    const messagesLogs = document.getElementById("messagesLogs");
+    const userDisplay = document.querySelector("#user");
+    const chatbox = document.querySelector("#chatbox");
+    const messagesLogs = document.querySelector("#messagesLogs");
     const setUsername = async () => {
         const { value: username } = await Swal.fire({
             title: "Login",
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
         userDisplay.innerHTML = `<b>${username}: </b>`;
         return username;
     };
-    const initSocket = (username) => {
+    const initSocket = username => {
         const socket = io();
         chatbox.addEventListener("keyup", event => {
             if (event.key === "Enter" && chatbox.value.trim().length > 0) {
@@ -27,8 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 chatbox.value = "";
             };
         });
-        socket.on("logs", (data) => {
-            const messagesHTML = data.map((message) => {
+        socket.on("logs", data => {
+            const messagesHTML = data.map(message => {
                 return `<div class="bg-primary p-2 m-2 rounded-2">
                         <p><b>${message.user}</b>: ${message.message}</p>
                     </div>`;
@@ -52,5 +52,5 @@ document.addEventListener("DOMContentLoaded", () => {
             }).showToast();
         });
     };
-    setUsername().then((username) => initSocket(username))
+    setUsername().then(username => initSocket(username));
 });

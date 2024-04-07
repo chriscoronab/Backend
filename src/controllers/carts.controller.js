@@ -136,17 +136,6 @@ export const deleteProductCart = async (req, res) => {
     };
 };
 
-const calculateTotalAmount = async cart => {
-    let total = 0;
-    for (const item of cart) {
-        const product = await productService.getProductByID(item.product);
-        if (!product) return req.logger.error(`El producto con ID ${item.product} no existe`);
-        total += product.price * item.quantity;
-    };
-    total = Number(total.toFixed(2));
-    return total;
-};
-
 export const purchase = async (req, res) => {
     try {
         const { cid } = req.params;
@@ -155,16 +144,14 @@ export const purchase = async (req, res) => {
             req.logger.error(`El carrito con ID ${cid} no existe`);
             return res.status(404).send({ error: `El carrito con ID ${cid} no existe` });
         };
-        const userEmail = req.user.email;
-        const approvedProducts = [];
-        const rejectedProducts = [];
+        const email = req.user.email;
+        let approvedProducts = [];
+        let rejectedProducts = [];
         for (const item of cart.products) {
             const product = await productService.getProductByID(item.product._id);
-            if (!product || product.stock === 0 || product.stock < item.q0uantity) {
+            if (product.stock < item.quantity) {
                 rejectedProducts.push(item);
-                continue;
-            };
-            if (product.stock >= item.quantity) {
+            } else {
                 product.stock -= item.quantity;
                 await productService.updateProduct(product._id, product);
                 approvedProducts.push(item);
@@ -174,20 +161,20 @@ export const purchase = async (req, res) => {
             const newTicket = {
                 code: uuidv4(),
                 purchase_datetime: new Date(),
-                amount: await calculateTotalAmount(approvedProducts),
-                purchaser: userEmail,
+                amount: await cartService.calculateTotalAmount(approvedProducts),
+                purchaser: email,
                 products: approvedProducts.map(prod => ({ product: prod.product._id, quantity: prod.quantity })),
                 rejected_products: rejectedProducts.map(p => ({ product: p.product._id, quantity: p.quantity }))
             };
             const saveTicket = await ticketService.createTicket(newTicket);
             const ticket = await ticketService.getTicketByID(saveTicket._id);
             const notPurchased = rejectedProducts.length > 0 ? true : false;
-            await sendTicketMail(userEmail, ticket);
+            await sendTicketMail(email, ticket);
             req.logger.info("Compra realizada con éxito");
             return res.status(200).render("ticket", { ticket, notPurchased });
         } else {
             req.logger.error("La compra no pudo ser procesada por falta de stock");
-            return res.status(400).send({ error: "La compra no pudo ser procesada por falta de stock" });
+            return res.status(400).render("paymentFailure", {});
         };
     } catch (error) {
         res.status(500).send({ error: error.message });

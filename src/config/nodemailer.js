@@ -34,7 +34,7 @@ export const sendTicketMail = async (email, ticket) => {
 
 export const sendPasswordRecoveryMail = async (email, token) => {
     try {
-        const link = `http://127.0.0.1:8080/reset-password?token=${token}`;
+        const link = `${config.serverURL}/reset-password?token=${token}`;
         return await transport.sendMail({
             from: config.nodemailerMail,
             to: email,
@@ -52,7 +52,7 @@ export const sendPasswordRecoveryMail = async (email, token) => {
 
 export const sendDeletedUserMail = async user => {
     try {
-        const link = "http://127.0.0.1:8080/register";
+        const link = `${config.serverURL}/register`;
         return await transport.sendMail({
             from: config.nodemailerMail,
             to: user.email,
