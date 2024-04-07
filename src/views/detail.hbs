@@ -9,10 +9,14 @@
         {{#if admin}}
         <button class="btn btn-danger deleteProduct">Eliminar producto</button>
         {{else if premium}}
+        {{#if stock}}
         <button class="btn btn-success addToCart">Agregar al carrito</button>
+        {{/if}}
         <button class="btn btn-danger deleteProduct">Eliminar producto</button>
         {{else}}
+        {{#if stock}}
         <button class="btn btn-success addToCart">Agregar al carrito</button>
+        {{/if}}
         {{/if}}
     </div>
 </div>

@@ -63,7 +63,8 @@ export const productRender = async (req, res) => {
         const cart = user.cart;
         const admin = user.role === "Admin" ? true : false;
         const premium = user.role === "Premium" ? true : false;
-        return res.status(200).render("detail", { product, cart, admin, premium });
+        const stock = product.stock > 0 ? true : false;
+        return res.status(200).render("detail", { product, cart, admin, premium, stock });
     } catch (error) {
         res.status(500).send({ error: error.message });
     };
